@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Block new spec tasks on a failing type check",
+      "trigger": "PreTaskExec",
+      "description": "Prevents starting a spec task while the tree does not type-check.",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro/run-check.mjs typecheck --block",
+        "timeout": 120
+      }
+    }
+  ]
+}

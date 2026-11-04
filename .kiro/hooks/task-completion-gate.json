@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Verify after each spec task",
+      "trigger": "PostTaskExec",
+      "description": "After a spec task completes: type check, lint, all unit tests, and Prettier check on changed files. Failures are reported to the agent.",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro/run-check.mjs typecheck lint test --format-changed",
+        "timeout": 240
+      }
+    }
+  ]
+}

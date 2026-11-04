@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Resume summary at session start",
+      "trigger": "SessionStart",
+      "description": "Injects git state, spec task counts and docs/STATUS.md progress so a fresh session resumes from real repository state.",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro/session-status.mjs",
+        "timeout": 20
+      }
+    }
+  ]
+}

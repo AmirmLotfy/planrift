@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Geometry regression tests on domain edits",
+      "trigger": "PostFileSave",
+      "description": "Runs the domain test suite (flagship oracle, property and metamorphic tests) whenever the agent edits the geometry engine or its tests.",
+      "matcher": "(src|tests)/domain/.*\\.ts$",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro/run-check.mjs test:domain",
+        "timeout": 120
+      }
+    }
+  ]
+}
