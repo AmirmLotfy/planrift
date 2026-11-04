@@ -1,15 +1,72 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react';
 import { findDoor } from '@/domain/model/lookup';
 import { activeView, hingeMapOf, useWorkspace } from '@/state/store';
 import { dragHingeOffset, clampHinge, nudgeStep, offsetAlongWall } from '@/render/interaction';
-import { buildPlanModel, cropForRooms, fitCropToAspect, type PlanDoor } from '@/render/planModel';
+import { buildPlanModel, cropForRooms, fitCropToAspect, type PlanBounds, type PlanDoor } from '@/render/planModel';
 import { svgToPlan } from '@/render/transforms';
 import { PlanDrawing } from './PlanDrawing';
 import styles from './plan.module.css';
 
-export function PlanView() {
+/** Pixels kept free of drawing content at each edge, for overlays that float above the plan. */
+export interface PlanInsets {
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+  readonly left: number;
+}
+
+const NO_INSETS: PlanInsets = { top: 0, right: 0, bottom: 0, left: 0 };
+/** Room for the 4,500 mm dimension (west), the hinge map and dimension strings (south). */
+const ROOM_PADDING = { west: 820, east: 380, south: 1380, north: 420 };
+const SCALE_STEPS_MM = [250, 500, 1000, 2000, 5000, 10000];
+
+/**
+ * Fits the padded room crop inside the canvas minus the overlay insets, then grows it back to
+ * the full canvas so the SVG fills the frame while drawing content stays clear of overlays.
+ */
+function cropWithInsets(base: PlanBounds, size: { width: number; height: number }, insets: PlanInsets): PlanBounds {
+  const innerW = Math.max(80, size.width - insets.left - insets.right);
+  const innerH = Math.max(80, size.height - insets.top - insets.bottom);
+  const fitted = fitCropToAspect(base, innerW / innerH);
+  const mmPerPx = (fitted.maxX - fitted.minX) / innerW;
+  return {
+    minX: fitted.minX - insets.left * mmPerPx,
+    maxX: fitted.maxX + insets.right * mmPerPx,
+    minY: fitted.minY - insets.bottom * mmPerPx,
+    maxY: fitted.maxY + insets.top * mmPerPx,
+  };
+}
+
+function ScaleBar({ pxPerMm }: { pxPerMm: number }) {
+  const lengthMm = SCALE_STEPS_MM.find((mm) => mm * pxPerMm >= 56) ?? SCALE_STEPS_MM[SCALE_STEPS_MM.length - 1]!;
+  const width = Math.round(lengthMm * pxPerMm);
+  const label = lengthMm >= 1000 ? `${lengthMm / 1000} m` : `${lengthMm} mm`;
+  return (
+    <div className={styles.scale} aria-label={`Scale bar: ${label}`} role="img">
+      <span className={styles.scaleBar} style={{ width }} aria-hidden="true">
+        <span />
+        <span />
+      </span>
+      <span className={styles.scaleLabel}>{label}</span>
+    </div>
+  );
+}
+
+export function PlanView({
+  extent = 'room',
+  insets = NO_INSETS,
+  footer,
+  showScale = true,
+}: {
+  /** Show the focus door's room only, or every room in the scene. */
+  extent?: 'room' | 'all';
+  insets?: PlanInsets;
+  /** Rendered at the bottom-left beside the scale bar (e.g. the status legend). */
+  footer?: ReactNode;
+  showScale?: boolean;
+}) {
   const project = useWorkspace((s) => s.project);
   const activeId = useWorkspace((s) => s.activeId);
   const preview = useWorkspace((s) => s.preview);
@@ -20,7 +77,6 @@ export function PlanView() {
   const edit = useWorkspace((s) => s.edit);
   const notify = useWorkspace((s) => s.notify);
   const view = useMemo(() => activeView({ project, activeId, preview }), [project, activeId, preview]);
-  const [roomFocus, setRoomFocus] = useState<'R-512' | 'all'>('R-512');
   const svgRef = useRef<SVGSVGElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ doorId: string; grabDelta: number; pointerId: number } | null>(null);
@@ -56,16 +112,18 @@ export function PlanView() {
     [view.scene, view.analysis, selectedId, hingeMaps],
   );
   const focusRoomId = findDoor(view.scene, focusDoorId)?.room.id ?? model.rooms[0]!.roomId;
-  const roomKey = roomFocus === 'all' ? model.rooms.map((r) => r.roomId).join(',') : focusRoomId;
+  const roomKey = extent === 'all' ? model.rooms.map((r) => r.roomId).join(',') : focusRoomId;
   const roomIds = useMemo(() => roomKey.split(','), [roomKey]);
   const dimRoomIds = useMemo(
-    () => (roomFocus === 'all' ? [] : model.rooms.map((r) => r.roomId).filter((id) => id !== focusRoomId)),
-    [roomFocus, model, focusRoomId],
+    () => (extent === 'all' ? [] : model.rooms.map((r) => r.roomId).filter((id) => id !== focusRoomId)),
+    [extent, model, focusRoomId],
   );
+  const { top, right, bottom, left } = insets;
   const crop = useMemo(
-    () => fitCropToAspect(cropForRooms(model, roomIds, { west: 820, east: 380, south: 1380, north: 520 }), size.width / size.height),
-    [model, roomIds, size.width, size.height],
+    () => cropWithInsets(cropForRooms(model, roomIds, ROOM_PADDING), size, { top, right, bottom, left }),
+    [model, roomIds, size, top, right, bottom, left],
   );
+  const pxPerMm = size.width / Math.max(1, crop.maxX - crop.minX);
 
   const pointerToPlan = useCallback((clientX: number, clientY: number) => {
     const svg = svgRef.current;
@@ -147,26 +205,7 @@ export function PlanView() {
   }, [model, focusDoorId, roomIds]);
 
   return (
-    <div className={styles.planFrame}>
-      <div className={styles.planToolbar}>
-        <div className={styles.segmented} role="group" aria-label="Plan extent">
-          <button type="button" aria-pressed={roomFocus === 'R-512'} onClick={() => setRoomFocus('R-512')}>
-            {focusRoomId}
-          </button>
-          <button type="button" aria-pressed={roomFocus === 'all'} onClick={() => setRoomFocus('all')}>
-            All rooms
-          </button>
-        </div>
-        <p className={styles.planHint}>
-          {view.editable ? (
-            <>Drag the hinge handle or focus it and use ← → (Shift ×10, Alt 1 mm)</>
-          ) : view.kind === 'revision' ? (
-            <>Committed revision · read-only. Start a scenario to propose a change.</>
-          ) : (
-            <>Scenario locked for review.</>
-          )}
-        </p>
-      </div>
+    <div className={styles.planFrame} data-editable={view.editable ? 'true' : 'false'}>
       <div
         ref={canvasRef}
         className={styles.planCanvas}
@@ -191,6 +230,12 @@ export function PlanView() {
           dimRoomIds={dimRoomIds}
         />
       </div>
+      {showScale || footer ? (
+        <div className={styles.planFooter}>
+          {showScale ? <ScaleBar pxPerMm={pxPerMm} /> : null}
+          {footer}
+        </div>
+      ) : null}
     </div>
   );
 }

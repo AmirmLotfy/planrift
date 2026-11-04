@@ -1,9 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
 import { flushSync } from 'react-dom';
 import { createRoot } from 'react-dom/client';
-import { Download } from 'lucide-react';
+import { ChevronDown, Download } from 'lucide-react';
 import { PlanDrawing, cropForRooms } from '@/components/plan/PlanDrawing';
 import { impactLedgerCsv } from '@/domain/io/csv';
 import { serializeProject } from '@/domain/io/projectFile';
@@ -12,13 +11,14 @@ import { buildPlanModel } from '@/render/planModel';
 import { useActiveView } from '@/state/hooks';
 import { useWorkspace } from '@/state/store';
 import { downloadText, slugDate } from './download';
-import styles from './workspace.module.css';
+import { Menu, type MenuEntry } from './Menu';
+import styles from './shell.module.css';
 
-export function ExportMenu({ onOpenImport, onReset }: { onOpenImport: () => void; onReset: () => void }) {
+/** Export, import and reset entries, shared by the desktop Export menu and the mobile overflow menu. */
+export function useExportEntries({ onOpenImport }: { onOpenImport: () => void }): MenuEntry[] {
   const project = useWorkspace((s) => s.project);
+  const reset = useWorkspace((s) => s.reset);
   const view = useActiveView();
-  const detailsRef = useRef<HTMLDetailsElement>(null);
-  const close = () => detailsRef.current?.removeAttribute('open');
   const label = view.scenario ? `revision-${view.scenario.label.toLowerCase()}` : view.kind;
 
   const exportSvg = () => {
@@ -37,70 +37,44 @@ export function ExportMenu({ onOpenImport, onReset }: { onOpenImport: () => void
   };
 
   const exportCsv = () => {
-    const ids = project.scenarios.map((s) => s.id);
-    const columns = buildComparison(project, ids, 'D-101');
+    const columns = buildComparison(project, project.scenarios.map((s) => s.id), 'D-101');
     downloadText(`planrift-impact-ledger-${slugDate()}.csv`, impactLedgerCsv(columns), 'text/csv');
   };
 
+  return [
+    {
+      key: 'project',
+      label: 'Project file',
+      hint: '.json',
+      onSelect: () => downloadText(`aster-house.planrift-${slugDate()}.json`, serializeProject(project, new Date().toISOString()), 'application/json'),
+    },
+    { key: 'csv', label: 'Impact ledger', hint: '.csv', disabled: project.scenarios.length === 0, onSelect: exportCsv },
+    { key: 'svg', label: 'Current plan', hint: '.svg', onSelect: exportSvg },
+    { key: 'import', label: 'Import project…', separatorBefore: true, onSelect: onOpenImport },
+    {
+      key: 'reset',
+      label: 'Reset demo',
+      onSelect: () => {
+        if (window.confirm('Reset the demo? Your scenarios and decisions in this browser will be removed.')) reset();
+      },
+    },
+  ];
+}
+
+export function ExportMenu({ onOpenImport }: { onOpenImport: () => void }) {
+  const items = useExportEntries({ onOpenImport });
   return (
-    <details className={styles.menu} ref={detailsRef}>
-      <summary className={styles.menuSummary}>
-        <Download size={15} aria-hidden="true" /> Export
-      </summary>
-      <div className={styles.menuList} role="menu">
-        <button
-          role="menuitem"
-          type="button"
-          onClick={() => {
-            downloadText(`aster-house.planrift-${slugDate()}.json`, serializeProject(project, new Date().toISOString()), 'application/json');
-            close();
-          }}
-        >
-          Project file <span>.json</span>
-        </button>
-        <button
-          role="menuitem"
-          type="button"
-          onClick={() => {
-            exportCsv();
-            close();
-          }}
-          disabled={project.scenarios.length === 0}
-        >
-          Impact ledger <span>.csv</span>
-        </button>
-        <button
-          role="menuitem"
-          type="button"
-          onClick={() => {
-            exportSvg();
-            close();
-          }}
-        >
-          Current plan <span>.svg</span>
-        </button>
-        <hr />
-        <button
-          role="menuitem"
-          type="button"
-          onClick={() => {
-            close();
-            onOpenImport();
-          }}
-        >
-          Import project…
-        </button>
-        <button
-          role="menuitem"
-          type="button"
-          onClick={() => {
-            close();
-            if (window.confirm('Reset the demo? Your scenarios and decisions in this browser will be removed.')) onReset();
-          }}
-        >
-          Reset demo
-        </button>
-      </div>
-    </details>
+    <Menu
+      label={
+        <>
+          <Download size={15} aria-hidden="true" />
+          <span className={styles.hideTablet}>Export</span>
+          <ChevronDown size={13} aria-hidden="true" className={styles.chevron} />
+        </>
+      }
+      ariaLabel="Export, import or reset"
+      triggerClassName={styles.btn}
+      items={items}
+    />
   );
 }

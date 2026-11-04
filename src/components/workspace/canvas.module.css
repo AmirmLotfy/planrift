@@ -1,0 +1,524 @@
+/* Canvas: the focal plan/model area and the controls that float above it. */
+
+.canvas {
+  grid-area: canvas;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--paper);
+  container: canvas / inline-size;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.stage[data-mode='split'] {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+}
+
+.planPane,
+.modelPane {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+.modelPane {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.stage[data-mode='split'] .modelPane {
+  border-left: 1px solid var(--rule);
+}
+
+.modelViewport {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.modelLoading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+@container canvas (max-width: 899.98px) {
+  .stage[data-mode='split'] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+  .stage[data-mode='split'] .modelPane {
+    border-left: none;
+    border-top: 1px solid var(--rule);
+  }
+}
+
+/* ---------- Floating controls ---------- */
+.topLeft,
+.topRight {
+  position: absolute;
+  top: 12px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topLeft {
+  left: 12px;
+}
+
+.topRight {
+  right: 12px;
+}
+
+.toolButton {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--rule-2);
+  border-radius: var(--radius);
+  background: var(--sheet);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.toolButton:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+
+.toolButton[aria-expanded='true'] {
+  background: var(--grip-tint);
+  border-color: color-mix(in srgb, var(--grip) 40%, transparent);
+  color: var(--grip-ink);
+}
+
+.inspectorToggle {
+  display: none;
+}
+
+.modeSwitch,
+.extentSwitch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--rule-2);
+  border-radius: 10px;
+  background: var(--sheet);
+}
+
+.modeSwitch button,
+.extentSwitch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.modeSwitch button:hover,
+.extentSwitch button:hover {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.modeSwitch button[aria-pressed='true'],
+.extentSwitch button[aria-pressed='true'] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.extentSwitch button:first-child {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.readOnly {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--rule-2);
+  border-radius: 6px;
+  background: var(--sheet);
+  color: var(--ink-2);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---------- Consequence banner ---------- */
+.bannerSlot {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.bannerSlot > * {
+  pointer-events: auto;
+}
+
+@container canvas (min-width: 1320px) {
+  .bannerSlot {
+    top: 12px;
+    max-width: calc(100% - 600px);
+  }
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 6px 6px 10px;
+  border: 1.5px solid var(--redline);
+  border-radius: 12px;
+  background: var(--sheet);
+  box-shadow: var(--shadow-float);
+  animation: banner-in 200ms var(--ease-out);
+}
+
+.banner[data-tone='amber'] {
+  border-color: var(--amber);
+}
+
+.banner[data-tone='neutral'] {
+  border-color: var(--rule-2);
+  border-style: dashed;
+}
+
+.banner[data-status='INVALID'] {
+  border-style: dashed;
+}
+
+.bannerText {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.bannerFigures {
+  display: flex;
+  gap: 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.bannerFigures b {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--redline-ink);
+}
+
+.banner[data-tone='amber'] .bannerFigures b {
+  color: var(--amber-ink);
+}
+
+.bannerShow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--rule-2);
+  border-radius: var(--radius);
+  background: var(--sheet);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  flex: none;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    background 160ms ease;
+}
+
+.bannerShow:hover {
+  border-color: var(--grip);
+  color: var(--grip-ink);
+  background: var(--grip-tint);
+}
+
+@keyframes banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* ---------- Legend (rendered inside the plan footer) ---------- */
+.legend {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+@container canvas (min-width: 1100px) {
+  .legend {
+    grid-template-columns: repeat(6, auto);
+  }
+}
+
+/* ---------- Coach ---------- */
+.coachSlot {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 6;
+  width: clamp(260px, calc(100% - 380px), 380px);
+}
+
+.coach {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'head head'
+    'body action';
+  align-items: end;
+  gap: 4px 14px;
+  padding: 11px 12px 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--sheet);
+  box-shadow: var(--shadow-float);
+  animation: banner-in 220ms var(--ease-out);
+}
+
+.coachHead {
+  grid-area: head;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.coachProgress {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+}
+
+.coachPip {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rule-2);
+}
+
+.coachPip[data-state='done'] {
+  background: var(--ink);
+}
+
+.coachPip[data-state='current'] {
+  background: var(--grip);
+}
+
+.coachCount {
+  margin-left: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.coachTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.coachClose {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin: -4px -4px -4px 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  flex: none;
+}
+
+.coachClose:hover {
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.coachBody {
+  grid-area: body;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.coachAction {
+  grid-area: action;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--grip);
+  border-radius: var(--radius);
+  background: var(--sheet);
+  color: var(--grip-ink);
+  font-size: 12.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.coachAction:hover {
+  background: var(--grip);
+  color: #fff;
+}
+
+/* Phone: a slim row at the top of the bottom sheet. */
+.coach[data-variant='row'] {
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 8px 12px 10px 16px;
+  animation: none;
+}
+
+.coach[data-variant='row'] .coachBody {
+  display: none;
+}
+
+.coach[data-variant='row'] {
+  grid-template-areas:
+    'head head'
+    'action action';
+}
+
+.coach[data-variant='row'] .coachAction {
+  justify-self: start;
+  height: 30px;
+}
+
+/* ---------- Tablet: inspector toggle visible ---------- */
+@media (min-width: 820px) and (max-width: 1199.98px) {
+  .inspectorToggle {
+    display: inline-grid;
+  }
+}
+
+/* ---------- Phone canvas ---------- */
+@media (max-width: 819.98px) {
+  .topLeft {
+    top: 10px;
+    left: 10px;
+  }
+  .topRight {
+    top: 10px;
+    right: 10px;
+  }
+  .modeSwitch button[data-mode='split'] {
+    display: none;
+  }
+  .modeSwitch button {
+    padding: 0 9px;
+  }
+  .readOnly {
+    display: none;
+  }
+}
+
+@container canvas (max-width: 559.98px) {
+  .bannerSlot {
+    top: 52px;
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+  .banner {
+    width: 100%;
+    gap: 8px;
+    padding: 6px 6px 6px 10px;
+  }
+  .banner > :first-child,
+  .bannerFigures {
+    display: none;
+  }
+  .bannerText {
+    flex: 1;
+    font-size: 13px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .legend {
+    display: none;
+  }
+  .extentSwitch button:last-child {
+    font-size: 12px;
+  }
+}

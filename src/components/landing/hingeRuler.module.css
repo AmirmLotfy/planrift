@@ -1,0 +1,408 @@
+/* "Where can the door go?" — live plan over a to-scale hinge map. Tokens only. */
+
+.head {
+  align-items: end;
+}
+
+.intro {
+  grid-column: 1 / span 7;
+  display: grid;
+  gap: 18px;
+  align-content: end;
+}
+
+/* ---------- Live readout (model instrument) ---------- */
+.readout {
+  grid-column: 8 / span 5;
+  align-self: end;
+  position: relative;
+  overflow: hidden;
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px 16px;
+}
+
+.readout::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--pass);
+  transition: background-color 160ms ease;
+}
+
+.readout[data-status='NEAR_CLEARANCE']::before,
+.readout[data-status='CONTACT_REVIEW']::before {
+  background: var(--amber);
+}
+
+.readout[data-status='CONFLICT']::before {
+  background: var(--redline);
+}
+
+.readout[data-status='INVALID']::before {
+  background: var(--ink);
+}
+
+.readTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.readValue {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: clamp(44px, 4.4vw, 62px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.readUnit {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.readSentence {
+  margin-top: 10px;
+  min-height: 2.9em;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+}
+
+.facts dt {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.facts dd {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+
+/* ---------- Instrument: plan + strip ---------- */
+.instrument {
+  position: relative;
+}
+
+.planHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.plan {
+  position: relative;
+  width: 100%;
+}
+
+.projection {
+  position: absolute;
+  width: 0;
+  border-left: 1px dashed var(--grip);
+  transform: translateX(-0.5px);
+  pointer-events: none;
+}
+
+.hingeDot {
+  position: absolute;
+  top: -6px;
+  left: -6.5px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--sheet);
+  border: 2px solid var(--grip);
+}
+
+.strip {
+  position: relative;
+  display: block;
+  touch-action: pan-y;
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+  border-radius: var(--radius);
+  outline: none;
+}
+
+.strip:focus-visible {
+  box-shadow: var(--ring);
+}
+
+.stripSvg {
+  display: block;
+  overflow: visible;
+}
+
+.tick {
+  stroke: var(--rule-2);
+  stroke-width: 1;
+}
+
+.tickMajor {
+  stroke: var(--ink-3);
+  stroke-width: 1;
+}
+
+.rulerLabel {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  fill: var(--ink-3);
+  transition: opacity 160ms ease;
+}
+
+.rulerLabel[data-hidden] {
+  opacity: 0;
+}
+
+.baseline {
+  stroke: var(--rule-2);
+  stroke-width: 1;
+}
+
+.band[data-status='PASS'] {
+  fill: var(--pass);
+}
+
+.band[data-status='CONTACT_REVIEW'] {
+  fill: var(--amber);
+}
+
+.band[data-status='NEAR_CLEARANCE'] {
+  stroke: var(--amber);
+  stroke-width: 1;
+}
+
+.band[data-status='INVALID'] {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.band[data-status='UNSUPPORTED'] {
+  fill: var(--rule-2);
+}
+
+.fillAmberTint {
+  fill: var(--amber-tint);
+}
+
+.strokeAmber {
+  stroke: var(--amber);
+}
+
+.fillRedline {
+  fill: var(--redline);
+}
+
+.strokeSheet {
+  stroke: var(--sheet);
+}
+
+.fillSheet {
+  fill: var(--sheet);
+}
+
+.strokeInk {
+  stroke: var(--ink);
+}
+
+.boundary {
+  transition: opacity 280ms var(--ease-out);
+}
+
+.boundary:not([data-shown]) {
+  opacity: 0;
+}
+
+.leader {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+}
+
+.boundaryLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--ink);
+}
+
+.cursorLine {
+  stroke: var(--grip);
+  stroke-width: 2;
+}
+
+.pill {
+  fill: var(--grip);
+}
+
+.pillText {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  fill: var(--sheet);
+}
+
+.handle {
+  fill: var(--sheet);
+  stroke: var(--grip);
+  stroke-width: 2;
+  transition: r 160ms var(--ease-out);
+}
+
+.handleDot {
+  fill: var(--grip);
+}
+
+.strip:focus-visible .handle,
+.strip:hover .handle {
+  r: 9px;
+}
+
+/* Before the one-time sweep (motion allowed only), the bands and cursor wait off-stage. */
+:global(.js-motion) .instrument[data-phase='idle'] .bands,
+:global(.js-motion) .instrument[data-phase='idle'] .cursor,
+:global(.js-motion) .instrument[data-phase='idle'] .boundaries,
+:global(.js-motion) .instrument[data-phase='idle'] .projection {
+  opacity: 0;
+}
+
+.hint {
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--ink-3);
+}
+
+.hint kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1px solid var(--rule-2);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--sheet);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 15px;
+  text-align: center;
+  color: var(--ink-2);
+}
+
+/* ---------- Band legend (also jump buttons) ---------- */
+.legend {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  border-top: 1px solid var(--rule);
+}
+
+.legendItem {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 10px 4px 0;
+  border: 0;
+  border-top: 2px solid transparent;
+  margin-top: -1px;
+  background: none;
+  text-align: left;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.legendItem:hover {
+  color: var(--ink);
+  border-top-color: var(--rule-2);
+}
+
+.legendItem[aria-current='true'] {
+  color: var(--ink);
+  border-top-color: var(--grip);
+}
+
+.legendSwatch {
+  display: block;
+  overflow: visible;
+}
+
+.legendStatus {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: inherit;
+}
+
+.legendRange {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-3);
+  font-feature-settings: 'tnum' 1;
+}
+
+@media (max-width: 1180px) {
+  .legend {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 960px) {
+  .intro,
+  .readout {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .planHead > :last-child {
+    display: none;
+  }
+
+  .facts {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .facts > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .readout {
+    padding: 16px 16px 14px;
+  }
+}

@@ -1,0 +1,518 @@
+/* "A clear swing still changes the drawing set." — sheets with red-pen markup + receipt slip. */
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 8fr) minmax(300px, 4fr);
+  gap: 24px 48px;
+  align-items: start;
+}
+
+/* ---------- Stack of sheets (dealt onto the table, each a little further right) ---------- */
+.stack {
+  display: grid;
+  gap: 18px;
+}
+
+.slot {
+  width: calc(100% - 56px);
+  margin-left: calc(var(--k, 0) * 28px);
+}
+
+.sheet {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(244px, 1fr);
+  background: var(--sheet);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  /* Paper sheets are physical objects: a very soft shadow, nothing else on the page gets one. */
+  box-shadow:
+    0 1px 1px color-mix(in srgb, var(--ink) 5%, transparent),
+    0 12px 28px -18px color-mix(in srgb, var(--ink) 30%, transparent);
+  transition:
+    transform 420ms var(--ease-out),
+    box-shadow 420ms var(--ease-out);
+}
+
+.sheet:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 1px 1px color-mix(in srgb, var(--ink) 5%, transparent),
+    0 18px 34px -18px color-mix(in srgb, var(--ink) 34%, transparent);
+}
+
+.drawing {
+  padding: 12px;
+  border-right: 1px solid var(--rule);
+}
+
+.drawingFrame {
+  position: relative;
+  aspect-ratio: 1.9;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+
+.drawingFrame > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  pointer-events: none;
+}
+
+.paper {
+  fill: var(--paper);
+}
+
+.inkThin {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.inkHair {
+  stroke: var(--rule-2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.inkFloor {
+  stroke: var(--ink);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.inkDoor {
+  fill: var(--sheet);
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.inkDash {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.furniture {
+  fill: var(--model-2);
+  stroke: var(--ink-2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.inkLabel {
+  font-family: var(--font-mono);
+  fill: var(--ink-2);
+}
+
+.schedHead {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  fill: var(--ink-3);
+}
+
+.schedCell {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  fill: var(--ink);
+}
+
+/* Red pen: the proposed change only. */
+.mkLine {
+  fill: none;
+  stroke: var(--redline);
+}
+
+.mkDash {
+  fill: none;
+  stroke: var(--redline);
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.mkFill {
+  fill: var(--redline);
+}
+
+.mkText {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  fill: var(--redline-ink);
+}
+
+.mkCloud {
+  fill: none;
+  stroke: var(--redline);
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.delta polygon {
+  fill: var(--sheet);
+  stroke: var(--redline);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.delta text {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  fill: var(--redline-ink);
+}
+
+/* ---------- Title block ---------- */
+.titleBlock {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 14px 16px 16px;
+}
+
+.tbRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.sheetId {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.rev {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+
+.sheetTitle {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.tbMeta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 10px;
+  margin: 0;
+  font-size: 12.5px;
+}
+
+.tbMeta > div {
+  display: contents;
+}
+
+.tbMeta dt {
+  color: var(--ink-3);
+}
+
+.tbMeta dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.reasons {
+  display: grid;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+}
+
+.reasons p {
+  display: grid;
+  gap: 2px;
+}
+
+.reasonChange {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.reasonNote {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+.review {
+  padding-top: 2px;
+}
+
+/* Highlighter: drawn left→right when the sheet arrives; already there without motion. */
+.swipe {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px 3px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.swipe::before {
+  content: '';
+  position: absolute;
+  inset: 1px -3px 0 -2px;
+  z-index: -1;
+  background: var(--highlighter);
+  border-radius: 3px 7px 4px 6px / 6px 3px 7px 4px;
+  transform: skewX(-10deg) rotate(-0.8deg);
+  transform-origin: 0 50%;
+}
+
+:global(.js-motion) .slot .swipe::before {
+  transition: transform 900ms var(--ease-out);
+  transition-delay: calc(620ms + var(--i, 0) * 140ms);
+}
+
+:global(.js-motion) .slot:not(:global(.is-in)) .swipe::before {
+  transform: skewX(-10deg) rotate(-0.8deg) scaleX(0);
+}
+
+:global(.js-motion) .slot .mkCloud {
+  transition: stroke-dashoffset 1100ms var(--ease-out);
+  transition-delay: calc(380ms + var(--i, 0) * 140ms);
+}
+
+:global(.js-motion) .slot:not(:global(.is-in)) .mkCloud {
+  stroke-dashoffset: 1;
+}
+
+/* ---------- Documents without a record ---------- */
+.untouched {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 12px 14px;
+  border: 1px dashed var(--rule-2);
+  border-radius: 2px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.untouchedMark {
+  flex: none;
+  width: 22px;
+  height: 28px;
+  margin-top: 1px;
+  border: 1px dashed var(--ink-3);
+  border-radius: 1px;
+}
+
+.untouchedId {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink);
+}
+
+/* ---------- Receipt slip ---------- */
+.slipWrap {
+  position: sticky;
+  top: 104px;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.slip {
+  width: min(100%, 360px);
+  filter: drop-shadow(0 1px 1px color-mix(in srgb, var(--ink) 6%, transparent)) drop-shadow(0 14px 22px color-mix(in srgb, var(--ink) 14%, transparent));
+  transform: rotate(0.6deg);
+}
+
+.edgeTop,
+.edgeBottom {
+  display: block;
+  width: 100%;
+  height: 8px;
+}
+
+.edgeTop polygon,
+.edgeBottom polygon {
+  fill: var(--sheet);
+}
+
+.slipBody {
+  padding: 14px 22px 18px;
+  background: var(--sheet);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink);
+  font-feature-settings:
+    'tnum' 1,
+    'zero' 1;
+}
+
+.slipKicker {
+  text-align: center;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.slipId {
+  margin-top: 4px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.slipProject,
+.slipScenario {
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.slipProject {
+  margin-top: 6px;
+}
+
+.slipList {
+  margin: 14px 0 0;
+}
+
+.slipList > div {
+  padding: 10px 0;
+  border-top: 1px dashed var(--rule-2);
+}
+
+.slipList dt {
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.slipList dd {
+  margin: 2px 0 0;
+}
+
+.slipResult {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.slipDoc {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.slipDecision {
+  font-weight: 500;
+}
+
+.slipNote {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.bars {
+  display: block;
+  width: 100%;
+  height: 26px;
+  margin-top: 12px;
+}
+
+.bars rect {
+  fill: var(--ink);
+}
+
+.slipEngine {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 10.5px;
+  color: var(--ink-3);
+}
+
+.slipCaption {
+  max-width: 34ch;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+
+@media (max-width: 1180px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+    gap: 24px 32px;
+  }
+
+  .slot {
+    width: calc(100% - 28px);
+    margin-left: calc(var(--k, 0) * 14px);
+  }
+
+  .sheet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .drawing {
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .slipWrap {
+    position: static;
+  }
+
+  .slip {
+    transform: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .titleBlock {
+    padding: 12px 14px 14px;
+  }
+
+  .sheetId {
+    font-size: 20px;
+  }
+
+  .slipBody {
+    padding: 12px 16px 16px;
+  }
+}

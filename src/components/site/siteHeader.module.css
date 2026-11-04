@@ -1,0 +1,422 @@
+/* Floating header with live capsule and dimension-line scroll gauge. Tokens only. */
+
+.header {
+  position: fixed;
+  inset: 12px 0 auto;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.bar {
+  pointer-events: auto;
+  position: relative;
+  width: min(1440px, 100% - 2 * var(--page-inset));
+  height: 56px;
+  margin-inline: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  /* Translucent on purpose: the page passes under the bar while you scroll. */
+  background: color-mix(in srgb, var(--sheet) 86%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  backdrop-filter: blur(18px) saturate(1.25);
+  transition:
+    box-shadow 360ms var(--ease-out),
+    border-color 360ms var(--ease-out);
+}
+
+.bar[data-scrolled] {
+  box-shadow: var(--shadow-float);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 16px;
+  height: 43px;
+  padding: 0 6px 0 16px;
+}
+
+.brand {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 4px;
+  margin-left: -4px;
+  border-radius: 7px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* ---------- Navigation ---------- */
+.nav ul,
+.sheet ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav ul {
+  display: flex;
+  gap: 2px;
+}
+
+.nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 11px;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color 140ms ease,
+    background-color 140ms ease;
+}
+
+.nav a:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.nav a[aria-current] {
+  color: var(--ink);
+}
+
+.nav a[aria-current]::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--grip);
+}
+
+.end {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Live capsule ---------- */
+.capsule,
+.sheetCapsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 4px 0 10px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-feature-settings: 'tnum' 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 140ms ease;
+}
+
+.capsule:hover,
+.sheetCapsule:hover {
+  border-color: var(--rule-2);
+}
+
+.capsuleId {
+  font-weight: 500;
+}
+
+.capsuleDot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+
+.capsuleMm {
+  min-width: 8.2ch;
+  text-align: right;
+  color: var(--ink-2);
+}
+
+.capsuleBadge {
+  display: inline-flex;
+  animation: capsule-in 420ms var(--ease-out);
+}
+
+@keyframes capsule-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+
+/* ---------- CTA + menu button ---------- */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px 0 14px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--sheet);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 160ms ease;
+}
+
+.cta:hover {
+  background: color-mix(in srgb, var(--ink) 84%, var(--sheet));
+}
+
+.cta svg {
+  transition: transform 220ms var(--ease-out);
+}
+
+.cta:hover svg {
+  transform: translateX(2px);
+}
+
+.ctaShort {
+  display: none;
+}
+
+.menuButton {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--sheet);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* ---------- Dimension-line scroll gauge ---------- */
+.gauge {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  height: 12px;
+  pointer-events: none;
+}
+
+.gaugeLine,
+.gaugeFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3px;
+  height: 1px;
+  background: var(--rule-2);
+}
+
+.gaugeFill {
+  background: var(--grip);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p));
+}
+
+.gaugeTick {
+  position: absolute;
+  bottom: 3px;
+  width: 1px;
+  height: 6px;
+  margin-left: -0.5px;
+  background: var(--ink-3);
+}
+
+.gaugeLabel {
+  position: absolute;
+  left: 4px;
+  bottom: 1px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.gaugeTick[data-end] .gaugeLabel {
+  left: auto;
+  right: 4px;
+}
+
+.gaugeMarker {
+  position: absolute;
+  bottom: 4px;
+  left: calc(var(--p) * 100%);
+  width: 0;
+  height: 0;
+  margin-left: -4.5px;
+  border-left: 4.5px solid transparent;
+  border-right: 4.5px solid transparent;
+  border-top: 7px solid var(--grip);
+}
+
+/* The current reading, shown just below the bar while the page is moving. */
+.gaugeReading {
+  position: absolute;
+  top: calc(100% + 9px);
+  left: calc(var(--p) * 100%);
+  padding: 3px 6px;
+  border-radius: 5px;
+  background: var(--grip);
+  color: var(--sheet);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-feature-settings: 'tnum' 1;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.bar[data-scrolling] .gaugeReading {
+  opacity: 1;
+}
+
+/* ---------- Mobile sheet ---------- */
+.sheet {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  display: none;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--sheet) 97%, transparent);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-float);
+  animation: sheet-in 320ms var(--ease-out);
+}
+
+.sheet[hidden] {
+  display: none !important;
+}
+
+.sheet ul {
+  display: grid;
+}
+
+.sheet li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.sheet a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.sheet a[aria-current] {
+  color: var(--grip-ink);
+}
+
+.sheetCapsule {
+  justify-self: start;
+  margin: 4px 4px 4px 8px;
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1199px) {
+  .row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .nav a {
+    padding: 0 8px;
+  }
+}
+
+@media (max-width: 999px) {
+  .capsule {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .row {
+    height: 54px;
+    padding: 0 9px 0 14px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .menuButton {
+    display: inline-flex;
+  }
+
+  .sheet {
+    display: grid;
+  }
+
+  .gauge {
+    left: 14px;
+    right: 14px;
+    height: 2px;
+  }
+
+  .gaugeLine,
+  .gaugeFill {
+    bottom: 0;
+    height: 2px;
+  }
+
+  .gaugeTick,
+  .gaugeMarker,
+  .gaugeReading {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .ctaLong {
+    display: none;
+  }
+
+  .ctaShort {
+    display: inline;
+  }
+
+  .cta {
+    padding: 0 10px 0 12px;
+  }
+}

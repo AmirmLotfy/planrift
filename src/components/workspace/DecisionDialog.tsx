@@ -1,16 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { TriangleAlert } from 'lucide-react';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { Button, Dialog, fieldStyles } from '@/components/ui/primitives';
+import { Button, Dialog } from '@/components/ui/primitives';
 import { shortFingerprint } from '@/domain/io/canonical';
 import { receiptHtml } from '@/domain/io/receiptHtml';
 import { describeFieldChange } from '@/domain/revision/diff';
 import { acceptanceBlockers, submissionBlockers } from '@/domain/revision/scenario';
 import { useActiveView } from '@/state/hooks';
 import { useWorkspace } from '@/state/store';
+import { LifecycleStepper } from './DecisionSection';
 import { downloadText } from './download';
-import styles from './workspace.module.css';
+import styles from './dialogs.module.css';
+
+function Blockers({ reasons, label }: { reasons: readonly string[]; label: string }) {
+  if (!reasons.length) return null;
+  return (
+    <div className={styles.blockers} aria-label="Blocking conditions" role="group">
+      <p className={styles.blockersLabel}>
+        <TriangleAlert size={14} aria-hidden="true" /> {label}
+      </p>
+      <ul>
+        {reasons.map((r) => (
+          <li key={r}>{r}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 export function DecisionDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const view = useActiveView();
@@ -26,57 +44,86 @@ export function DecisionDialog({ open, onClose }: { open: boolean; onClose: () =
   const [ack, setAck] = useState(false);
   const scenario = view.scenario;
   const evaluation = view.evaluation;
-  if (!scenario || !evaluation) return <Dialog open={false} title="Review" onClose={onClose}>{null}</Dialog>;
+  if (!scenario || !evaluation) {
+    return (
+      <Dialog open={false} title="Review" onClose={onClose}>
+        {null}
+      </Dialog>
+    );
+  }
 
   const input = { reviewer, note, acknowledgedDocuments: ack };
   const receipt = scenario.decision ? project.receipts.find((r) => r.id === scenario.decision!.receiptId) : undefined;
   const status = evaluation.analysis.status;
 
-  let body: React.ReactNode;
-  let footer: React.ReactNode;
+  let body: ReactNode;
+  let footer: ReactNode;
 
   const summary = (
-    <div className={styles.decisionSummary}>
-      <div className={styles.panelHead}>
+    <div className={styles.summary}>
+      <div className={styles.summaryHead}>
         <div>
-          <p className={styles.eyebrow}>Revision {scenario.label}</p>
-          <p className={styles.panelTitle}>{scenario.name}</p>
+          <p className={styles.summaryLabel}>
+            Revision {scenario.label} <span className="mono">· from {scenario.sourceRevisionId}</span>
+          </p>
+          <p className={styles.summaryName}>{scenario.name}</p>
         </div>
-        <StatusBadge status={status} size="lg" />
+        <StatusBadge status={status} />
       </div>
-      <ul className={styles.plainList}>
-        {evaluation.diff.fields.length ? evaluation.diff.fields.map((c) => <li key={c.field + c.elementId} className="mono">{describeFieldChange(c)}</li>) : <li>No changes yet.</li>}
-      </ul>
-      {evaluation.impacts.length ? (
-        <p>
-          <StatusBadge status="REVIEW_REQUIRED" size="sm" label={`${evaluation.impacts.length} documents`} />{' '}
-          <span className="mono">{evaluation.impacts.map((i) => i.documentId).join(', ')}</span> require review.
-        </p>
-      ) : null}
+      <LifecycleStepper status={scenario.status} />
+      <dl className={styles.rows}>
+        <dt>Changes</dt>
+        <dd>
+          {evaluation.diff.fields.length ? (
+            <ul className={styles.plain}>
+              {evaluation.diff.fields.map((c) => (
+                <li key={c.field + c.elementId} className="mono">
+                  {describeFieldChange(c)}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <span className={styles.muted}>No changes yet.</span>
+          )}
+        </dd>
+        <dt>Documents</dt>
+        <dd>
+          {evaluation.impacts.length ? (
+            <span className={styles.docLine}>
+              {evaluation.impacts.map((i) => (
+                <span key={i.documentId} className={`mono ${styles.docChip}`}>
+                  {i.documentId}
+                </span>
+              ))}
+              <span>require review.</span>
+            </span>
+          ) : (
+            <span className={styles.muted}>No linked documents affected.</span>
+          )}
+        </dd>
+      </dl>
     </div>
   );
-
-  const blockers = (reasons: string[]) =>
-    reasons.length ? (
-      <ul className={styles.blockers} aria-label="Blocking conditions">
-        {reasons.map((r) => (
-          <li key={r}>{r}</li>
-        ))}
-      </ul>
-    ) : null;
 
   if (scenario.status === 'draft') {
     const reasons = submissionBlockers(evaluation);
     body = (
       <>
         {summary}
-        <div className={fieldStyles.field}>
-          <label htmlFor="remarks" className={fieldStyles.fieldLabel}>
+        <div className={styles.field}>
+          <label htmlFor="remarks" className={styles.label}>
             Remarks for the reviewer
           </label>
-          <textarea id="remarks" className={fieldStyles.input} rows={3} defaultValue={scenario.remarks} onBlur={(e) => setRemarks(e.target.value)} maxLength={2000} />
+          <textarea
+            id="remarks"
+            className={styles.input}
+            rows={3}
+            defaultValue={scenario.remarks}
+            onBlur={(e) => setRemarks(e.target.value)}
+            maxLength={2000}
+          />
         </div>
-        {blockers(reasons)}
+        <Blockers reasons={reasons} label="Before you can submit" />
       </>
     );
     footer = (
@@ -84,7 +131,8 @@ export function DecisionDialog({ open, onClose }: { open: boolean; onClose: () =
         <Button variant="danger" onClick={() => discard()} disabled={!evaluation.hasChanges}>
           Discard changes
         </Button>
-        <Button variant="primary" disabled={reasons.length > 0} onClick={() => submit()}>
+        <span className={styles.spacer} />
+        <Button variant="accent" disabled={reasons.length > 0} onClick={() => submit()}>
           Submit for review
         </Button>
       </>
@@ -94,78 +142,91 @@ export function DecisionDialog({ open, onClose }: { open: boolean; onClose: () =
     body = (
       <>
         {summary}
-        <div className={fieldStyles.field}>
-          <label htmlFor="reviewer" className={fieldStyles.fieldLabel}>
-            Reviewer (optional)
-          </label>
-          <input id="reviewer" className={fieldStyles.input} value={reviewer} maxLength={80} onChange={(e) => setReviewer(e.target.value)} />
+        <div className={styles.fieldRow}>
+          <div className={styles.field}>
+            <label htmlFor="reviewer" className={styles.label}>
+              Reviewer <span className={styles.optional}>optional</span>
+            </label>
+            <input id="reviewer" className={styles.input} value={reviewer} maxLength={80} onChange={(e) => setReviewer(e.target.value)} />
+          </div>
         </div>
-        <div className={fieldStyles.field}>
-          <label htmlFor="note" className={fieldStyles.fieldLabel}>
+        <div className={styles.field}>
+          <label htmlFor="note" className={styles.label}>
             Decision note
           </label>
-          <textarea id="note" className={fieldStyles.input} rows={3} value={note} maxLength={2000} onChange={(e) => setNote(e.target.value)} />
-          <p className={fieldStyles.fieldHint}>Required to reject, and to accept a contact or near-clearance advisory.</p>
+          <textarea id="note" className={styles.input} rows={3} value={note} maxLength={2000} onChange={(e) => setNote(e.target.value)} aria-describedby="note-hint" />
+          <p id="note-hint" className={styles.hint}>
+            Required to reject, and to accept a contact or near-clearance advisory.
+          </p>
         </div>
         {evaluation.impacts.length ? (
           <label className={styles.ack}>
             <input type="checkbox" checked={ack} onChange={(e) => setAck(e.target.checked)} />
             <span>
-              I understand PLANRIFT has not modified {evaluation.impacts.map((i) => i.documentId).join(', ')}; they must be revised and re-issued by
-              the design team.
+              I understand PLANRIFT has not modified{' '}
+              <span className="mono">{evaluation.impacts.map((i) => i.documentId).join(', ')}</span>; they must be revised and re-issued by the
+              design team.
             </span>
           </label>
         ) : null}
-        {blockers(reasons)}
+        <Blockers reasons={reasons} label="To accept" />
       </>
     );
     footer = (
       <>
         <Button onClick={() => reopen()}>Return to draft</Button>
+        <span className={styles.spacer} />
         <Button variant="danger" disabled={note.trim().length < 3} onClick={() => reject({ reviewer, note })}>
           Reject
         </Button>
-        <Button variant="primary" disabled={reasons.length > 0} onClick={() => accept(input)}>
+        <Button variant="accent" disabled={reasons.length > 0} onClick={() => accept(input)}>
           Accept &amp; commit
         </Button>
       </>
     );
   } else if (receipt) {
     body = (
-      <>
-        <div className={styles.receiptCard} data-receipt={receipt.id}>
-          <p className={styles.eyebrow}>Revision receipt</p>
-          <p className={`mono ${styles.receiptId}`}>{receipt.id}</p>
-          <p>
-            <strong>{receipt.decision.outcome === 'accepted' ? 'Accepted' : 'Rejected'}</strong>
-            {receipt.decision.reviewer ? ` by ${receipt.decision.reviewer}` : ''} · <span className="mono">{receipt.decision.decidedAt.slice(0, 16).replace('T', ' ')}</span>
-          </p>
-          <dl className={styles.facts}>
-            <dt>Source</dt>
-            <dd className="mono">
-              {receipt.source.revisionId} · {shortFingerprint(receipt.source.fingerprint)}
-            </dd>
-            <dt>Result</dt>
-            <dd className="mono">
-              {receipt.result.revisionId ?? 'not committed'} · {shortFingerprint(receipt.result.fingerprint)}
-            </dd>
-            <dt>Analysis</dt>
-            <dd>
-              <StatusBadge status={receipt.analysis.status} size="sm" />
-            </dd>
-            <dt>Documents</dt>
-            <dd className="mono">{receipt.impacts.map((i) => i.documentId).join(', ') || '—'}</dd>
-            <dt>Note</dt>
-            <dd>{receipt.decision.note || '—'}</dd>
-          </dl>
-          <p className={styles.muted}>A review record, not a construction certificate or compliance statement.</p>
-        </div>
-      </>
+      <article className={styles.receipt} data-receipt={receipt.id}>
+        <header className={styles.receiptHead}>
+          <div>
+            <p className={styles.summaryLabel}>Revision receipt</p>
+            <p className={`mono ${styles.receiptId}`}>{receipt.id}</p>
+          </div>
+          <span className={styles.outcome} data-outcome={receipt.decision.outcome}>
+            {receipt.decision.outcome === 'accepted' ? 'Accepted' : 'Rejected'}
+          </span>
+        </header>
+        <dl className={styles.rows}>
+          <dt>Decided</dt>
+          <dd>
+            <span className="mono">{receipt.decision.decidedAt.slice(0, 16).replace('T', ' ')}</span>
+            {receipt.decision.reviewer ? ` by ${receipt.decision.reviewer}` : ''}
+          </dd>
+          <dt>Source</dt>
+          <dd className="mono">
+            {receipt.source.revisionId} · {shortFingerprint(receipt.source.fingerprint)}
+          </dd>
+          <dt>Result</dt>
+          <dd className="mono">
+            {receipt.result.revisionId ?? 'not committed'} · {shortFingerprint(receipt.result.fingerprint)}
+          </dd>
+          <dt>Analysis</dt>
+          <dd>
+            <StatusBadge status={receipt.analysis.status} size="sm" />
+          </dd>
+          <dt>Documents</dt>
+          <dd className="mono">{receipt.impacts.map((i) => i.documentId).join(', ') || '—'}</dd>
+          <dt>Note</dt>
+          <dd>{receipt.decision.note || '—'}</dd>
+        </dl>
+        <p className={styles.disclaimer}>A review record, not a construction certificate or compliance statement.</p>
+      </article>
     );
     footer = (
       <>
         <Button onClick={() => downloadText(`${receipt.id}.json`, JSON.stringify(receipt, null, 2), 'application/json')}>Receipt .json</Button>
-        <Button variant="primary" onClick={() => downloadText(`${receipt.id}.html`, receiptHtml(receipt), 'text/html')}>
+        <span className={styles.spacer} />
+        <Button variant="accent" onClick={() => downloadText(`${receipt.id}.html`, receiptHtml(receipt), 'text/html')}>
           Printable receipt .html
         </Button>
       </>
@@ -181,8 +242,15 @@ export function DecisionDialog({ open, onClose }: { open: boolean; onClose: () =
   }
 
   return (
-    <Dialog open={open} title={scenario.status === 'draft' ? 'Review proposal' : scenario.status === 'ready_for_review' ? 'Decide' : 'Decision record'} onClose={onClose} footer={footer}>
-      {body}
+    <Dialog
+      open={open}
+      title={scenario.status === 'draft' ? 'Review proposal' : scenario.status === 'ready_for_review' ? 'Decide' : 'Decision record'}
+      onClose={onClose}
+      footer={<div className={styles.footer}>{footer}</div>}
+    >
+      <div className={styles.body} data-dialog="decision">
+        {body}
+      </div>
     </Dialog>
   );
 }

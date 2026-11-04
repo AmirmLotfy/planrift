@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { X } from 'lucide-react';
 import { STATUS_LABEL, explainDoor } from '@/domain/analysis/explain';
 import { formatMm } from '@/domain/format';
 import { findDoor } from '@/domain/model/lookup';
 import { useActiveView } from '@/state/hooks';
 import { useWorkspace } from '@/state/store';
-import styles from './workspace.module.css';
+import styles from './shell.module.css';
 
 /** Announces analysis results politely, debounced so drags do not flood screen readers. */
 export function LiveRegion() {
@@ -45,7 +46,7 @@ export function NoticeToast() {
     <div className={styles.toast} data-kind={notice.kind} role={notice.kind === 'error' ? 'alert' : 'status'}>
       <span>{notice.text}</span>
       <button type="button" onClick={dismiss} aria-label="Dismiss notice">
-        ×
+        <X size={15} aria-hidden="true" />
       </button>
     </div>
   );

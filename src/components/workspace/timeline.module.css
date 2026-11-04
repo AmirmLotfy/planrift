@@ -1,0 +1,99 @@
+.timeline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.label {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.item + .item::before {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: var(--rule-2);
+}
+
+.item button,
+.static {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--sheet);
+  color: var(--ink-2);
+  font-size: 12px;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease,
+    background 160ms ease;
+}
+
+.item button {
+  cursor: pointer;
+}
+
+.item button :global(.mono) {
+  font-size: 11.5px;
+}
+
+.item button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--grip) 55%, transparent);
+  background: var(--grip-tint);
+  color: var(--grip-ink);
+}
+
+.item button:disabled {
+  cursor: default;
+}
+
+.item[data-state='current'] button {
+  border-color: var(--ink);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.item[data-state='future'] button {
+  border-style: dashed;
+  color: var(--ink-3);
+}
+
+.item[data-state='decision'] .static {
+  border-color: transparent;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.item[data-state='past'] .static {
+  border-color: transparent;
+  background: transparent;
+  padding-left: 0;
+}

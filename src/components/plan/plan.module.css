@@ -1,33 +1,16 @@
 .planFrame {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  min-height: 0;
+  position: relative;
   height: 100%;
-  background: var(--canvas);
-}
-
-.planToolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px 12px;
-  border-bottom: var(--hairline);
-  background: color-mix(in srgb, var(--paper) 70%, transparent);
-  flex-wrap: wrap;
-}
-
-.planHint {
-  font-size: 12px;
-  color: var(--mineral-ink);
+  min-height: 0;
+  background: var(--paper);
 }
 
 .planCanvas {
-  position: relative;
-  min-height: 0;
-  height: 100%;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .planCanvas > svg {
@@ -39,32 +22,50 @@
   cursor: grabbing;
 }
 
-.segmented {
+/* Bottom-left overlay: scale bar and the legend slot. */
+.planFooter {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  pointer-events: none;
+  max-width: calc(100% - 28px);
+}
+
+.planFooter > * {
+  pointer-events: auto;
+}
+
+.scale {
   display: inline-flex;
-  border: 1px solid var(--stone-deep);
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: var(--paper);
+  align-items: center;
+  gap: 8px;
+  flex: none;
 }
 
-.segmented button {
-  border: none;
-  background: transparent;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 550;
-  color: var(--ink-soft);
-  cursor: pointer;
-  font-family: var(--font-mono);
+.scaleBar {
+  display: inline-flex;
+  height: 6px;
+  border: 1px solid var(--ink);
+  background: var(--sheet);
 }
 
-.segmented button + button {
-  border-left: 1px solid var(--stone-deep);
+.scaleBar > span {
+  flex: 1;
 }
 
-.segmented button[aria-pressed='true'] {
+.scaleBar > span:first-child {
   background: var(--ink);
-  color: var(--paper);
+}
+
+.scaleLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  font-feature-settings: 'tnum' 1;
+  white-space: nowrap;
 }
 
 :global(.plan-handle:focus-visible .plan-handle-ring) {

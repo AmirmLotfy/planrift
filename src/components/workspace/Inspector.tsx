@@ -1,159 +1,109 @@
 'use client';
 
-import { StatusBadge } from '@/components/ui/StatusBadge';
-import { fieldStyles } from '@/components/ui/primitives';
-import { wallSegment } from '@/domain/geometry/frame';
-import { formatMm } from '@/domain/format';
-import { findWall, footprintBounds, locateElement } from '@/domain/model/lookup';
-import type { Door, Furniture } from '@/domain/model/types';
+import type { ReactNode } from 'react';
+import { StatusIcon } from '@/components/ui/StatusBadge';
 import { useActiveView } from '@/state/hooks';
-import { useWorkspace } from '@/state/store';
-import { NumberField } from './NumberField';
-import styles from './workspace.module.css';
+import { DecisionSection } from './DecisionSection';
+import { DocumentsSection } from './DocumentsSection';
+import { PositionSection } from './PositionSection';
+import { ResultSection } from './ResultSection';
+import { SelectionSection } from './SelectionSection';
+import { Timeline } from './Timeline';
+import { useFocusConsequence } from './useConsequence';
+import { MOBILE_QUERY, useMediaQuery } from './useMediaQuery';
+import styles from './inspector.module.css';
 
-const START_NAME = { south: 'west', east: 'south', north: 'east', west: 'north' } as const;
+export type InspectorTab = 'position' | 'result' | 'documents' | 'decision';
 
-export function Inspector() {
+const TABS: { id: InspectorTab; label: string }[] = [
+  { id: 'position', label: 'Position' },
+  { id: 'result', label: 'Result' },
+  { id: 'documents', label: 'Documents' },
+  { id: 'decision', label: 'Decision' },
+];
+
+/**
+ * Inspector: Selection → Position → Result → Documents → Decision, separated by hairlines.
+ * On phones the same sections become a bottom sheet with one tab visible at a time; the
+ * switch is CSS-driven, so nothing is rendered twice and the first paint is already right.
+ */
+export function Inspector({
+  tab,
+  onTab,
+  onOpenDecision,
+  coach,
+}: {
+  tab: InspectorTab;
+  onTab: (tab: InspectorTab) => void;
+  onOpenDecision: () => void;
+  /** Phone-only coach row shown above the tabs. */
+  coach?: ReactNode;
+}) {
   const view = useActiveView();
-  const selectedId = useWorkspace((s) => s.selectedId);
-  const edit = useWorkspace((s) => s.edit);
-  const located = selectedId ? locateElement(view.scene, selectedId) : undefined;
+  const { consequence } = useFocusConsequence();
+  const tabbed = useMediaQuery(MOBILE_QUERY);
+  const impacts = view.evaluation?.impacts.length ?? 0;
 
-  if (!located) {
-    return (
-      <section className={styles.panel} aria-labelledby="inspector-title">
-        <h2 id="inspector-title" className={styles.panelTitle}>Inspector</h2>
-        <p className={styles.muted}>Select a door or furniture item in the plan or the element list.</p>
-      </section>
-    );
-  }
+  const panel = (id: InspectorTab) => ({
+    className: styles.panel,
+    'data-panel': id,
+    'data-active': tab === id ? 'true' : 'false',
+    id: `inspector-panel-${id}`,
+    role: tabbed ? 'tabpanel' : undefined,
+    'aria-labelledby': tabbed ? `inspector-tab-${id}` : undefined,
+  });
 
-  const { room } = located;
-  const ra = view.analysis.rooms.find((r) => r.roomId === room.id)!;
-  const run = (e: Parameters<typeof edit>[0]): string | null => {
-    if (!view.editable) return view.kind === 'revision' ? 'Committed revisions are read-only. Start a new scenario to propose a change.' : 'This scenario is locked for review.';
-    return edit(e) ? null : (useWorkspace.getState().notice?.text ?? 'The change was rejected.');
-  };
-
-  if (located.kind === 'door') {
-    const door = located.element as Door;
-    const da = ra.doors.find((d) => d.doorId === door.id)!;
-    const wall = findWall(room, door.wallId);
-    const length = wall ? wallSegment(wall.side, room.widthMm, room.depthMm).length : 0;
-    const startName = wall ? START_NAME[wall.side] : 'start';
-    const range = door.leafDirection === 'toward-end' ? [0, length - door.leafWidthMm] : [door.leafWidthMm, length];
-    return (
-      <section className={styles.panel} aria-labelledby="inspector-title" data-inspector={door.id}>
-        <div className={styles.panelHead}>
-          <div>
-            <p className={styles.eyebrow}>Door · {room.id}</p>
-            <h2 id="inspector-title" className={styles.panelTitle}>
-              <span className="mono">{door.id}</span> {door.name}
-            </h2>
-          </div>
-          <StatusBadge status={da.status} />
-        </div>
-        <p className={styles.muted}>
-          {wall ? `${wall.side[0]!.toUpperCase()}${wall.side.slice(1)} wall ${wall.id} · ${formatMm(length)}` : 'Host wall missing'} · single-leaf hinged
-        </p>
-        {!view.editable ? (
-          <p className={styles.lockNote}>
-            {view.kind === 'revision' ? 'Viewing a committed revision. Create a scenario (header → New scenario) to edit.' : 'Locked while in review or decided.'}
-          </p>
-        ) : null}
-        <NumberField
-          label="Hinge position"
-          value={door.hingeOffsetMm}
-          disabled={!view.editable}
-          steps={[-100, -10, 10, 100]}
-          testId="hinge-input"
-          hint={`From the ${startName} end of the wall. The leaf fits between ${formatMm(Math.max(0, range[0]!))} and ${formatMm(Math.max(0, range[1]!))}.`}
-          onCommit={(v) => run({ kind: 'door.hinge', doorId: door.id, hingeOffsetMm: v })}
-        />
-        <NumberField
-          label="Leaf width"
-          value={door.leafWidthMm}
-          disabled={!view.editable}
-          hint="Swing radius of the leaf."
-          testId="leaf-input"
-          onCommit={(v) => run({ kind: 'door.leafWidth', doorId: door.id, leafWidthMm: v })}
-        />
-        <div className={fieldStyles.field}>
-          <label className={fieldStyles.fieldLabel} htmlFor="handing">
-            Handing
-          </label>
-          <select
-            id="handing"
-            className={fieldStyles.input}
-            value={door.leafDirection}
-            disabled={!view.editable}
-            onChange={(e) => run({ kind: 'door.leafDirection', doorId: door.id, leafDirection: e.target.value as Door['leafDirection'] })}
-          >
-            <option value="toward-end">Leaf closes toward the {wall ? { south: 'east', east: 'north', north: 'west', west: 'south' }[wall.side] : 'end'}</option>
-            <option value="toward-start">Leaf closes toward the {startName}</option>
-          </select>
-        </div>
-        <details className={styles.advanced}>
-          <summary>Swing settings (supported model: 90°, inward)</summary>
-          <NumberField
-            label="Swing angle"
-            unit="°"
-            value={door.swingDeg}
-            disabled={!view.editable}
-            hint="Only 90° is analysed. Other angles report Unsupported, never Pass."
-            onCommit={(v) => run({ kind: 'door.swingDeg', doorId: door.id, swingDeg: v })}
-          />
-          <div className={fieldStyles.field}>
-            <label className={fieldStyles.fieldLabel} htmlFor="swing-side">
-              Swing side
-            </label>
-            <select
-              id="swing-side"
-              className={fieldStyles.input}
-              value={door.swingSide}
-              disabled={!view.editable}
-              onChange={(e) => run({ kind: 'door.swingSide', doorId: door.id, swingSide: e.target.value as Door['swingSide'] })}
-            >
-              <option value="interior">Into the room (supported)</option>
-              <option value="exterior">Out of the room (unsupported)</option>
-            </select>
-          </div>
-        </details>
-      </section>
-    );
-  }
-
-  const item = located.element as Furniture;
-  const b = footprintBounds(item);
-  const fa = ra.furniture.find((f) => f.furnitureId === item.id);
   return (
-    <section className={styles.panel} aria-labelledby="inspector-title" data-inspector={item.id}>
-      <div className={styles.panelHead}>
-        <div>
-          <p className={styles.eyebrow}>Furniture · {room.id}</p>
-          <h2 id="inspector-title" className={styles.panelTitle}>
-            <span className="mono">{item.id}</span> {item.name}
-          </h2>
-        </div>
-        <StatusBadge status={fa?.validity === 'VALID' ? (ra.pairs.find((p) => p.furnitureId === item.id && p.status !== 'PASS')?.status ?? 'PASS') : (fa?.validity ?? 'PASS')} />
+    <div className={styles.inspector} data-tab={tab}>
+      {coach}
+      <div className={styles.tabs} role="tablist" aria-label="Inspector">
+        {TABS.map((t) => (
+          <button
+            key={t.id}
+            type="button"
+            role="tab"
+            id={`inspector-tab-${t.id}`}
+            aria-selected={tab === t.id}
+            aria-controls={`inspector-panel-${t.id}`}
+            tabIndex={tab === t.id ? 0 : -1}
+            className={styles.tab}
+            onClick={() => onTab(t.id)}
+            onKeyDown={(e) => {
+              const i = TABS.findIndex((x) => x.id === t.id);
+              const next = e.key === 'ArrowRight' ? TABS[(i + 1) % TABS.length] : e.key === 'ArrowLeft' ? TABS[(i + TABS.length - 1) % TABS.length] : null;
+              if (next) {
+                e.preventDefault();
+                onTab(next.id);
+                document.getElementById(`inspector-tab-${next.id}`)?.focus();
+              }
+            }}
+          >
+            {t.id === 'result' && consequence ? <StatusIcon status={consequence.analysis.status} size={12} /> : null}
+            <span>{t.label}</span>
+            {t.id === 'documents' && impacts ? <span className={styles.tabCount}>{impacts}</span> : null}
+          </button>
+        ))}
       </div>
-      <dl className={styles.facts}>
-        <dt>Footprint X</dt>
-        <dd className="mono">
-          {formatMm(b.minX)} – {formatMm(b.maxX)}
-        </dd>
-        <dt>Footprint Y</dt>
-        <dd className="mono">
-          {formatMm(b.minY)} – {formatMm(b.maxY)}
-        </dd>
-        <dt>Size</dt>
-        <dd className="mono">
-          {formatMm(b.maxX - b.minX)} × {formatMm(b.maxY - b.minY)} × {formatMm(item.heightMm)}
-        </dd>
-        <dt>Shape</dt>
-        <dd>{item.footprint.kind === 'rect' ? 'Axis-aligned rectangle' : item.footprint.kind}</dd>
-      </dl>
-      <p className={styles.muted}>Furniture positions are fixed in this demo; the door is the element under revision.</p>
-    </section>
+      <div className={styles.scroll}>
+        <div {...panel('position')}>
+          <SelectionSection />
+          <PositionSection />
+        </div>
+        <div {...panel('result')}>
+          <ResultSection />
+        </div>
+        <div {...panel('documents')}>
+          <DocumentsSection />
+        </div>
+        <div {...panel('decision')}>
+          <DecisionSection onOpenDecision={onOpenDecision} />
+          {tabbed ? (
+            <div className={styles.mobileTimeline}>
+              <Timeline />
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
   );
 }

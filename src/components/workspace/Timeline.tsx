@@ -1,9 +1,18 @@
 'use client';
 
-import { describeFieldChange, diffScenes } from '@/domain/revision/diff';
+import { formatMm } from '@/domain/format';
+import { describeFieldChange, diffScenes, type FieldChange } from '@/domain/revision/diff';
 import { useActiveView } from '@/state/hooks';
 import { useWorkspace } from '@/state/store';
-import styles from './workspace.module.css';
+import { LIFECYCLE_LABEL } from './lifecycle';
+import styles from './timeline.module.css';
+
+/** Short chip text for one change; the full sentence stays in the accessible name and tooltip. */
+function shortChange(c: FieldChange): string {
+  if (typeof c.after === 'number' && c.field.endsWith('Mm')) return `${c.elementId} ${formatMm(c.after)}`;
+  if (c.field === 'swingDeg') return `${c.elementId} ${String(c.after)}°`;
+  return `${c.elementId} ${String(c.after)}`;
+}
 
 export function Timeline() {
   const view = useActiveView();
@@ -14,16 +23,18 @@ export function Timeline() {
 
   if (!scenario) {
     return (
-      <div className={styles.timeline} aria-label="Revision history">
-        <span className={styles.timelineLabel}>History</span>
-        <ol className={styles.timelineList}>
+      <nav className={styles.timeline} aria-label="Revision history">
+        <span className={styles.label}>History</span>
+        <ol className={styles.list}>
           {project.revisions.map((r) => (
-            <li key={r.id} className={styles.timelineItem} data-state="past">
-              <span className="mono">{r.id}</span> {r.summary}
+            <li key={r.id} className={styles.item} data-state="past">
+              <span className={styles.static}>
+                <span className="mono">{r.id}</span> {r.summary}
+              </span>
             </li>
           ))}
         </ol>
-      </div>
+      </nav>
     );
   }
 
@@ -31,7 +42,10 @@ export function Timeline() {
   const current = scenario.past.length;
   const steps = snapshots.slice(1).map((snap, i) => {
     const changes = diffScenes(snapshots[i]!, snap).fields;
-    return changes.length ? changes.map(describeFieldChange).join('; ') : 'No geometric change';
+    return {
+      short: changes.length ? changes.map(shortChange).join(' · ') : 'No geometric change',
+      full: changes.length ? changes.map(describeFieldChange).join('; ') : 'No geometric change',
+    };
   });
   const jump = (target: number) => {
     const delta = target - current;
@@ -42,27 +56,42 @@ export function Timeline() {
   };
 
   return (
-    <div className={styles.timeline} aria-label="Scenario timeline">
-      <span className={styles.timelineLabel}>Revision {scenario.label} timeline</span>
-      <ol className={styles.timelineList}>
-        <li className={styles.timelineItem} data-state={current === 0 ? 'current' : 'past'}>
-          <button type="button" onClick={() => jump(0)} disabled={!view.editable || current === 0}>
+    <nav className={styles.timeline} aria-label={`Revision ${scenario.label} timeline`}>
+      <span className={styles.label}>
+        Revision {scenario.label} · {steps.length} step{steps.length === 1 ? '' : 's'}
+      </span>
+      <ol className={styles.list}>
+        <li className={styles.item} data-state={current === 0 ? 'current' : 'past'}>
+          <button
+            type="button"
+            onClick={() => jump(0)}
+            disabled={!view.editable || current === 0}
+            aria-current={current === 0 ? 'step' : undefined}
+            aria-label={`Source revision ${scenario.sourceRevisionId}`}
+          >
             <span className="mono">{scenario.sourceRevisionId}</span> source
           </button>
         </li>
-        {steps.map((label, i) => (
-          <li key={i} className={styles.timelineItem} data-state={i + 1 === current ? 'current' : i + 1 < current ? 'past' : 'future'}>
-            <button type="button" onClick={() => jump(i + 1)} disabled={!view.editable || i + 1 === current}>
-              <span className="mono">{label}</span>
+        {steps.map((step, i) => (
+          <li key={i} className={styles.item} data-state={i + 1 === current ? 'current' : i + 1 < current ? 'past' : 'future'}>
+            <button
+              type="button"
+              onClick={() => jump(i + 1)}
+              disabled={!view.editable || i + 1 === current}
+              aria-current={i + 1 === current ? 'step' : undefined}
+              aria-label={`Step ${i + 1}: ${step.full}${i + 1 > current ? ' (undone)' : ''}`}
+              title={step.full}
+            >
+              <span className="mono">{step.short}</span>
             </button>
           </li>
         ))}
         {scenario.status !== 'draft' ? (
-          <li className={styles.timelineItem} data-state="decision">
-            <span>{scenario.status === 'ready_for_review' ? 'Submitted for review' : scenario.status.replace(/_/g, ' ')}</span>
+          <li className={styles.item} data-state="decision">
+            <span className={styles.static}>{scenario.status === 'ready_for_review' ? 'Submitted for review' : LIFECYCLE_LABEL[scenario.status]}</span>
           </li>
         ) : null}
       </ol>
-    </div>
+    </nav>
   );
 }

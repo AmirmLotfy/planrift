@@ -1,0 +1,259 @@
+/* Comparison: one spec sheet, rows aligned with hairlines, one column per alternative. */
+
+.page {
+  display: grid;
+  gap: 18px;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 24px clamp(16px, 3vw, 32px) 40px;
+}
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--rule-2);
+  border-radius: var(--radius);
+  background: var(--sheet);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 160ms ease;
+}
+
+.back:hover {
+  border-color: var(--ink-3);
+}
+
+.scroller {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  background: var(--sheet);
+}
+
+.sheet {
+  width: 100%;
+  min-width: calc(176px + var(--cols) * 232px);
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.sheet th,
+.sheet td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.sheet td,
+.colHead {
+  border-left: 1px solid var(--rule);
+}
+
+.sheet tbody tr:last-child > * {
+  border-bottom: none;
+}
+
+.corner,
+.sheet tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  width: 176px;
+  background: var(--sheet);
+}
+
+.sheet tbody th {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.colHead {
+  padding-top: 16px !important;
+  font-weight: 400;
+}
+
+.colHead[data-active='true'] {
+  box-shadow: inset 0 3px 0 var(--grip);
+}
+
+.colLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.colName {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.colActions {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.colButton {
+  height: 28px;
+  padding: 0 11px;
+  border: 1px solid var(--rule-2);
+  border-radius: 7px;
+  background: var(--sheet);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.colButton:hover {
+  border-color: var(--ink-3);
+}
+
+.colPrimary {
+  border-color: var(--grip);
+  color: var(--grip-ink);
+}
+
+.colPrimary:hover {
+  background: var(--grip);
+  border-color: var(--grip);
+  color: #fff;
+}
+
+.thumbRow td {
+  padding: 10px;
+}
+
+.thumb {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+.figure {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.figure[data-sign='negative'] {
+  color: var(--redline-ink);
+}
+
+.delta {
+  font-size: 12px;
+  color: var(--redline-ink);
+}
+
+.muted {
+  color: var(--ink-3);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.docChip {
+  padding: 1px 6px;
+  border-radius: 2px;
+  background: var(--highlighter);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.changed {
+  color: var(--redline-ink);
+}
+
+.lifecycle {
+  font-weight: 600;
+}
+
+.remarks {
+  display: block;
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.note {
+  max-width: 880px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  padding: 80px 20px;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+@media (max-width: 819.98px) {
+  .page {
+    gap: 14px;
+    padding: 16px 12px 32px;
+  }
+  .title {
+    font-size: 20px;
+  }
+  .sheet {
+    min-width: calc(108px + var(--cols) * 200px);
+  }
+  .corner,
+  .sheet tbody th {
+    width: 108px;
+  }
+  .sheet th,
+  .sheet td {
+    padding: 10px 12px;
+  }
+}
