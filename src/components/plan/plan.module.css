@@ -1,0 +1,72 @@
+.planFrame {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 0;
+  height: 100%;
+  background: var(--canvas);
+}
+
+.planToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: var(--hairline);
+  background: color-mix(in srgb, var(--paper) 70%, transparent);
+  flex-wrap: wrap;
+}
+
+.planHint {
+  font-size: 12px;
+  color: var(--mineral-ink);
+}
+
+.planCanvas {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+}
+
+.planCanvas > svg {
+  position: absolute;
+  inset: 0;
+}
+
+.planCanvas[data-dragging='true'] {
+  cursor: grabbing;
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--stone-deep);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.segmented button {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-family: var(--font-mono);
+}
+
+.segmented button + button {
+  border-left: 1px solid var(--stone-deep);
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+:global(.plan-handle:focus-visible .plan-handle-ring) {
+  stroke-width: 2.5px;
+}

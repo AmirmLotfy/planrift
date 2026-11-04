@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "mobbin": {
+      "url": "https://api.mobbin.com/mcp",
+      "disabled": false,
+      "autoApprove": []
+    },
+    "refero": {
+      "url": "https://api.refero.design/mcp",
+      "headers": {
+        "Authorization": "Bearer ${REFERO_MCP_TOKEN}"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

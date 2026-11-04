@@ -1,0 +1,89 @@
+.wrap {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  min-height: 0;
+  background: var(--canvas);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: var(--hairline);
+  border-top: var(--hairline);
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: 12px;
+  color: var(--mineral-ink);
+  font-family: var(--font-mono);
+}
+
+.presets {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.presets button {
+  border: 1px solid var(--stone-deep);
+  background: var(--paper);
+  border-radius: var(--radius);
+  padding: 2px 9px;
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+
+.presets button[aria-pressed='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.presets button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.canvas {
+  min-height: 0;
+}
+
+.fallback {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--mineral-ink);
+  font-size: 13px;
+  text-align: center;
+  height: 100%;
+}
+
+.label3d span {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font: 600 11px/1.4 var(--font-mono);
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--stone-deep);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.label3d span[data-status='CONFLICT'],
+.label3d span[data-status='INVALID'] {
+  color: var(--coral-ink);
+  border-color: var(--coral);
+}
+
+.label3d span[data-status='NEAR_CLEARANCE'],
+.label3d span[data-status='CONTACT_REVIEW'] {
+  color: var(--copper-ink);
+  border-color: var(--copper);
+}

@@ -1,0 +1,230 @@
+:root {
+  /* v4 "white model" — light only. Each hue has one meaning (see DESIGN.md). */
+  --paper: #f6f6f3;
+  --sheet: #ffffff;
+  --model: #f8f8f4;
+  --model-2: #ecebe5;
+  --ink: #111315;
+  --ink-2: #4a5057;
+  --ink-3: #858b91;
+  --rule: #e3e4df;
+  --rule-2: #cfd1cb;
+
+  --grip: #2f5bff;
+  --grip-ink: #2448d8;
+  --grip-tint: #edf1ff;
+  --redline: #ff4a1c;
+  --redline-ink: #c6300b;
+  --redline-tint: #ffede7;
+  --pass: #0e9f5a;
+  --pass-ink: #0a7a45;
+  --pass-tint: #e6f6ee;
+  --amber: #e8a600;
+  --amber-ink: #7a5600;
+  --amber-tint: #fff6db;
+  --highlighter: #ffe14d;
+
+  --shadow-float: 0 1px 2px rgb(17 19 21 / 0.06), 0 14px 36px -14px rgb(17 19 21 / 0.22);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --page-inset: clamp(16px, 4vw, 48px);
+
+  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --radius: 8px;
+  --radius-lg: 14px;
+  --hairline: 1px solid var(--rule);
+  --ring: 0 0 0 2px var(--sheet), 0 0 0 4px var(--grip);
+
+  /* Legacy names still used by studio components; they map onto v4 meanings. */
+  --canvas: var(--paper);
+  --mineral: var(--ink-3);
+  --mineral-ink: #6a7076;
+  --ink-soft: var(--ink-2);
+  --stone: var(--rule);
+  --stone-deep: var(--rule-2);
+  --blueprint: var(--grip);
+  --blueprint-soft: #c8d4ff;
+  --blueprint-tint: var(--grip-tint);
+  --coral: var(--redline);
+  --coral-ink: var(--redline-ink);
+  --coral-tint: var(--redline-tint);
+  --evergreen: var(--pass-ink);
+  --evergreen-tint: var(--pass-tint);
+  --copper: var(--amber);
+  --copper-ink: var(--amber-ink);
+  --copper-tint: var(--amber-tint);
+  --review: var(--highlighter);
+  --marker: var(--redline);
+  --select: var(--grip);
+  --grid: #ececE8;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--blueprint);
+  text-underline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: 2px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+::selection {
+  background: var(--highlighter);
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Drawing motion ---------- */
+.cloud-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: cloud-draw 720ms var(--ease-out) forwards;
+}
+
+@keyframes cloud-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- Scroll reveals (applied only when JS added .js-motion; content is visible without JS) ---------- */
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 34px, 0);
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 1.1s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+  will-change: opacity, transform;
+}
+
+.js-motion [data-reveal].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.js-motion [data-reveal='fade'] {
+  transform: none;
+}
+
+.js-motion [data-reveal='wipe'] {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 1.25s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+.js-motion [data-reveal='wipe'].is-in {
+  clip-path: inset(0 0 0 0);
+}
+
+[data-lines] > [data-line] {
+  display: block;
+  overflow: hidden;
+  padding: 0.04em 0 0.14em;
+  margin-bottom: -0.1em;
+}
+
+[data-lines] > [data-line] > span {
+  display: block;
+}
+
+.js-motion [data-lines] > [data-line] > span {
+  transform: translate3d(0, 108%, 0) rotate(1.5deg);
+  transform-origin: 0 100%;
+  transition: transform 1.15s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 85ms + var(--j, 0) * 85ms);
+}
+
+.js-motion [data-lines].is-in > [data-line] > span {
+  transform: none;
+}
+
+.js-motion [data-rule] {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 1.4s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+.js-motion [data-rule].is-in {
+  transform: scaleX(1);
+}

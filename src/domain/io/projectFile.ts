@@ -128,7 +128,18 @@ export function toProjectFile(state: ProjectState, exportedAt: string): ProjectF
     version: 1,
     exportedAt,
     revisions: state.revisions.map((r) => ({ ...r })),
-    scenarios: state.scenarios.map(({ past: _past, future: _future, ...rest }) => ({ ...rest })),
+    scenarios: state.scenarios.map((s) => ({
+      id: s.id,
+      label: s.label,
+      name: s.name,
+      sourceRevisionId: s.sourceRevisionId,
+      scene: s.scene,
+      status: s.status,
+      remarks: s.remarks,
+      createdAt: s.createdAt,
+      updatedAt: s.updatedAt,
+      decision: s.decision,
+    })),
     receipts: state.receipts.map((r) => structuredClone(r)) as ProjectFile['receipts'],
   };
 }

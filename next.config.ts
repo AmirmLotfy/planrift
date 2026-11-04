@@ -3,7 +3,7 @@ import type { NextConfig } from 'next';
 const isDev = process.env.NODE_ENV === 'development';
 
 // PLANRIFT makes no third-party requests at runtime: no analytics, no remote fonts,
-// no remote models. Imported scene files are parsed as data and never fetched or executed.
+// no remote models or HDR maps. Imported scene files are parsed as data, never fetched or executed.
 const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
@@ -31,6 +31,13 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Lets parallel agents preview with separate build folders: NEXT_DIST_DIR=.next-hero next dev -p 3201
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+  experimental: {
+    // Disk on the build machine is tight; Turbopack's persistent cache filled it once already.
+    turbopackFileSystemCacheForDev: false,
+    turbopackFileSystemCacheForBuild: false,
+  },
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }];
   },
