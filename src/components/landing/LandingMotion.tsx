@@ -24,6 +24,7 @@ export function LandingMotion() {
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 0.9, smoothWheel: true });
+    activeLenis = lenis;
     const onScroll = () => ScrollTrigger.update();
     lenis.on('scroll', onScroll);
     const tick = (time: number) => lenis.raf(time * 1000);
@@ -63,8 +64,17 @@ export function LandingMotion() {
       lenis.destroy();
       ScrollTrigger.getAll().forEach((t) => t.kill());
       root.classList.remove('js-motion');
+      if (activeLenis === lenis) activeLenis = null;
     };
   }, []);
 
   return null;
+}
+
+let activeLenis: Lenis | null = null;
+
+/** Scrolls the page to a y offset through Lenis when it runs (eased), natively otherwise. */
+export function scrollToY(y: number) {
+  if (activeLenis) activeLenis.scrollTo(y, { duration: 1.2 });
+  else window.scrollTo({ top: y, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }

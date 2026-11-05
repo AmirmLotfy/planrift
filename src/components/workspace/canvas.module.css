@@ -49,8 +49,62 @@
   display: grid;
   place-items: center;
   height: 100%;
+  padding: 24px;
   color: var(--ink-3);
   font-size: 13px;
+  text-align: center;
+}
+
+/* Camera presets for the white model, bottom-left of the model pane. */
+.modelPresets {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 3;
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--sheet);
+  box-shadow:
+    0 0 0 1px var(--rule-2),
+    var(--shadow-float);
+}
+
+.modelPresets button {
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12.5px;
+  font-weight: 550;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.modelPresets button:hover {
+  color: var(--ink);
+}
+
+.modelPresets button[aria-pressed='true'] {
+  background: var(--grip-tint);
+  color: var(--grip-ink);
+}
+
+.modelHint {
+  position: absolute;
+  right: 12px;
+  bottom: 18px;
+  z-index: 3;
+  font-size: 12px;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+@container canvas (max-width: 559.98px) {
+  .modelHint {
+    display: none;
+  }
 }
 
 @container canvas (max-width: 899.98px) {

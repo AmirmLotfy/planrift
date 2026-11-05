@@ -23,6 +23,16 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // react-three-fiber scene code: the frame loop mutates three.js objects and shared
+    // animation state by design (useFrame), which the React Compiler rules cannot model.
+    // Everything outside src/components/scene keeps the full rule set.
+    files: ['src/components/scene/**/*.tsx'],
+    rules: {
+      'react-hooks/immutability': 'off',
+      'react-hooks/refs': 'off',
+    },
+  },
   globalIgnores([
     '.next/**',
     'out/**',

@@ -1,0 +1,383 @@
+/* Kiro section: hook pipeline drawn as one line with stations, then a three-column schedule. */
+
+.pipeline {
+  margin: 0;
+  padding: 22px 0 0;
+  border-top: 1px solid var(--ink);
+}
+
+.pipeHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 34px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+}
+
+.legendKey {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendKey .glyph {
+  width: 16px;
+  height: 16px;
+}
+
+.stations {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The session line all hooks hang off. */
+.stations::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--line-y, 92px);
+  height: 2px;
+  background: var(--ink);
+  transform-origin: 0 50%;
+}
+
+.stations::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: calc(var(--line-y, 92px) - 5px);
+  border-left: 9px solid var(--ink);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+}
+
+.station {
+  --line-y: 92px;
+  position: relative;
+  display: grid;
+  grid-template-rows: 74px 36px auto;
+  padding-right: 18px;
+}
+
+.when {
+  align-self: end;
+  display: grid;
+  gap: 4px;
+  padding-bottom: 12px;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.trigger {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.node {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  height: 36px;
+}
+
+.glyph {
+  display: block;
+  background: var(--paper);
+}
+
+.glyphBox {
+  fill: var(--sheet);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.glyphInk {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  stroke-linecap: square;
+}
+
+.glyphDot {
+  fill: var(--sheet);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.then {
+  padding-top: 16px;
+  border-left: 1px dashed var(--rule-2);
+  margin-left: 10px;
+  padding-left: 14px;
+}
+
+.thenText {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.station[data-gate] .thenText::before {
+  content: 'Gate · ';
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.file {
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+
+.cmd {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-3);
+  word-break: break-word;
+}
+
+/* ---------- schedule ---------- */
+
+.schedule {
+  display: grid;
+  grid-template-columns: 5fr 4fr 3fr;
+  gap: 0 40px;
+  margin-top: clamp(56px, 6vw, 88px);
+  border-top: 1px solid var(--ink);
+}
+
+.colHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--rule-2);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rows li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.specRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, 34%) 44px;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+}
+
+.agentRow {
+  display: grid;
+  gap: 3px;
+  padding: 11px 0 12px;
+}
+
+.steerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.summary {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Task progress drawn as a dimension line: filled ink from the start, tick at the end. */
+.meter {
+  position: relative;
+  height: 10px;
+}
+
+.meter::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 2px;
+  background: var(--rule);
+}
+
+.meter::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 1px;
+  height: 10px;
+  background: var(--rule-2);
+}
+
+.meter span {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  height: 2px;
+  background: var(--ink);
+}
+
+.tasks {
+  justify-self: end;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-2);
+  font-feature-settings: 'tnum' 1;
+}
+
+.inclusion {
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-2);
+  box-shadow: inset 0 0 0 1px var(--rule-2);
+}
+
+.inclusion[data-mode='always'] {
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink-3);
+}
+
+@media (max-width: 1100px) {
+  .stations {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 28px;
+  }
+
+  .stations::before,
+  .stations::after {
+    display: none;
+  }
+
+  .station {
+    grid-template-rows: auto 36px auto;
+  }
+
+  .node::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: -18px;
+    top: 17px;
+    height: 2px;
+    background: var(--ink);
+  }
+
+  .schedule {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .schedule .col:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .pipeHead {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stations {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  /* Vertical session line on phones: stations hang off the left edge. */
+  .station {
+    grid-template-columns: 36px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    padding: 0 0 22px;
+  }
+
+  .station::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--ink);
+  }
+
+  .when {
+    grid-column: 2;
+    grid-row: 1;
+    padding-bottom: 6px;
+  }
+
+  .node {
+    grid-column: 1;
+    grid-row: 1;
+    align-items: flex-end;
+    height: auto;
+  }
+
+  .node::before {
+    display: none;
+  }
+
+  .then {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .schedule {
+    grid-template-columns: 1fr;
+  }
+}

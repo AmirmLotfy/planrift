@@ -359,17 +359,31 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.25;
   color: inherit;
 }
 
+.legendLabel {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .legendRange {
+  display: grid;
+  gap: 2px;
   font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--ink-3);
   font-feature-settings: 'tnum' 1;
+  white-space: nowrap;
+}
+
+.legendIds {
+  color: var(--ink-2);
 }
 
 @media (max-width: 1180px) {
@@ -405,4 +419,9 @@
   .readout {
     padding: 16px 16px 14px;
   }
+}
+
+/* Document IDs never break at their hyphen. */
+.ids span {
+  white-space: nowrap;
 }

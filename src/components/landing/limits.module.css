@@ -1,0 +1,143 @@
+/* Scope as a "general notes" sheet: two halves, numbered notes with line glyphs. */
+
+.sheet {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 2px;
+  background: var(--sheet);
+  box-shadow: 0 0 0 1px var(--rule-2);
+}
+
+.half {
+  padding: 0 clamp(20px, 2.6vw, 40px) clamp(10px, 1.4vw, 18px);
+}
+
+.half + .half {
+  border-left: 1px solid var(--rule-2);
+}
+
+.halfHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 22px 0 16px;
+  border-bottom: 1px solid var(--ink);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.halfSub {
+  font-size: 13px;
+  font-weight: 450;
+  letter-spacing: 0;
+  color: var(--ink-3);
+}
+
+.notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note {
+  display: grid;
+  grid-template-columns: 30px 28px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.note:last-child {
+  border-bottom: 0;
+}
+
+.n {
+  padding-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  font-feature-settings: 'tnum' 1;
+}
+
+.glyph {
+  display: block;
+  overflow: visible;
+}
+
+.ink {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.note[data-struck] .ink {
+  stroke: var(--ink-3);
+}
+
+/* Red pen through what is not claimed. */
+.strike {
+  fill: none;
+  stroke: var(--redline);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.noteTitle {
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.noteDetail {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.codes code {
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--ink-2);
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--rule-2);
+}
+
+@media (max-width: 860px) {
+  .sheet {
+    grid-template-columns: 1fr;
+  }
+
+  .half + .half {
+    border-left: 0;
+    border-top: 1px solid var(--rule-2);
+  }
+}
+
+@media (max-width: 480px) {
+  .note {
+    grid-template-columns: 24px 24px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .glyph {
+    width: 24px;
+    height: 24px;
+  }
+}

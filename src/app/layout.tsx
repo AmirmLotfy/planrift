@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import '@fontsource-variable/instrument-sans/wdth.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -27,7 +28,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    // The motion boot script adds a class to <html> before hydration (see app/page.tsx).
+    <html lang="en" suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );

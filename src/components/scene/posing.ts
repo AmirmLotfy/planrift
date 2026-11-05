@@ -49,11 +49,12 @@ interface PoseDef {
 }
 
 // Viewpoints sit on the room side of the door's wall: from outside, the 1,350 mm cut wall hides
-// the console 230 mm behind it at any reasonable elevation.
+// the console 230 mm behind it at any reasonable elevation. The plan pose looks straight down
+// from the outward side so the drawing reads north-up, east-right, exactly like the SVG plan.
 const POSES: Record<CameraPose, PoseDef> = {
   hero: { azimuthDeg: 33, elevationDeg: 41, fov: 30, fill: 0.97, points: (m) => m.framing.room },
-  door: { azimuthDeg: 24, elevationDeg: 37, fov: 30, fill: 0.8, points: (m) => m.framing.door },
-  plan: { azimuthDeg: 0, elevationDeg: 89.9, fov: 20, fill: 0.92, points: (m) => m.framing.plan },
+  door: { azimuthDeg: 24, elevationDeg: 37, fov: 30, fill: 0.48, points: (m) => m.framing.door },
+  plan: { azimuthDeg: 180, elevationDeg: 89.9, fov: 11, fill: 0.94, points: (m) => m.framing.plan },
   overview: { azimuthDeg: 38, elevationDeg: 57, fov: 30, fill: 0.86, points: (m) => m.framing.room },
 };
 
@@ -159,5 +160,26 @@ export function blendGoals(a: CameraGoal, b: CameraGoal, t: number): CameraGoal 
     fov: mix(a.fov, b.fov),
     cx: mix(a.cx, b.cx),
     cy: mix(a.cy, b.cy),
+  };
+}
+
+/**
+ * Scroll path between poses with very different elevations (model ↔ plan): when rising, the
+ * camera climbs first and turns late, so the room stays readable instead of being seen edge-on
+ * mid-move; when descending, the reverse.
+ */
+export function arcGoals(a: CameraGoal, b: CameraGoal, t: number): CameraGoal {
+  if (t <= 0) return a;
+  if (t >= 1) return b;
+  const rising = b.elevation >= a.elevation;
+  const early = 1 - (1 - t) * (1 - t);
+  const late = t * (0.6 + 0.4 * t);
+  const base = blendGoals(a, b, t);
+  const te = rising ? early : late;
+  const ta = rising ? late : early;
+  return {
+    ...base,
+    elevation: a.elevation + (b.elevation - a.elevation) * te,
+    azimuth: a.azimuth + angleDelta(a.azimuth, b.azimuth) * ta,
   };
 }

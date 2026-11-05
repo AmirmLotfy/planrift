@@ -265,7 +265,16 @@ export function HingeRuler() {
               </div>
               <div>
                 <dt>Drawings to review</dt>
-                <dd className={s.mono}>{frame.impacts.length ? frame.impacts.map((i) => i.documentId).join(' · ') : 'None'}</dd>
+                <dd className={`${s.mono} ${css.ids}`}>
+                  {frame.impacts.length
+                    ? frame.impacts.map((i, k) => (
+                        <span key={i.documentId}>
+                          {k ? ' · ' : ''}
+                          {i.documentId}
+                        </span>
+                      ))
+                    : 'None'}
+                </dd>
               </div>
             </dl>
           </div>
@@ -432,11 +441,11 @@ export function HingeRuler() {
                     </svg>
                     <span className={css.legendStatus}>
                       <StatusIcon status={seg.status} size={13} />
-                      {STATUS_LABEL[seg.status]}
-                      {seg.limitingIds.length ? <span className={s.mono}> {seg.limitingIds.join(', ')}</span> : null}
+                      <span className={css.legendLabel}>{STATUS_LABEL[seg.status]}</span>
                     </span>
                     <span className={css.legendRange}>
                       {num(seg.fromMm)}–{formatMm(seg.toMm)}
+                      {seg.limitingIds.length ? <span className={css.legendIds}>{seg.limitingIds.join(', ')}</span> : null}
                     </span>
                   </button>
                 </li>

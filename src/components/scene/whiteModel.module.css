@@ -1,0 +1,126 @@
+/* White model canvas + DOM label layer. Tokens only (globals.css). */
+
+.root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: var(--paper);
+}
+
+.canvas {
+  position: absolute !important;
+  inset: 0;
+  outline: none;
+}
+
+.labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Positioned every frame by the projector (translate3d to the anchor); the chip sits above it. */
+.label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform: translate3d(-9999px, 0, 0);
+  will-change: transform, opacity;
+}
+
+.labelInner {
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  translate: -50% 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 7px 4px;
+  border-radius: 6px;
+  background: var(--sheet);
+  box-shadow:
+    0 0 0 1px var(--rule-2),
+    0 6px 16px -10px rgb(17 19 21 / 0.35);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  font-feature-settings:
+    'tnum' 1,
+    'zero' 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Leader from the chip to its anchor point. */
+.labelInner::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 1px;
+  height: 8px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.label[data-kind='hinge'] .labelInner {
+  color: var(--grip-ink);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--grip) 45%, transparent),
+    0 6px 16px -10px rgb(17 19 21 / 0.35);
+}
+
+.label[data-kind='measure'][data-status='CONFLICT'] .labelInner,
+.label[data-kind='measure'][data-status='INVALID'] .labelInner {
+  color: var(--redline-ink);
+  background: var(--redline-tint);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--redline) 50%, transparent);
+}
+
+.label[data-kind='measure'][data-status='PASS'] .labelInner {
+  color: var(--pass-ink);
+}
+
+.label[data-kind='measure'][data-status='NEAR_CLEARANCE'] .labelInner,
+.label[data-kind='measure'][data-status='CONTACT_REVIEW'] .labelInner {
+  color: var(--amber-ink);
+  background: var(--amber-tint);
+}
+
+.hint {
+  margin-left: 2px;
+  padding-left: 7px;
+  border-left: 1px solid var(--rule-2);
+  font-weight: 500;
+  color: var(--grip-ink);
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pass);
+  flex: none;
+}
+
+.label[data-status='CONFLICT'] .dot,
+.label[data-status='INVALID'] .dot {
+  background: var(--redline);
+}
+
+.label[data-status='NEAR_CLEARANCE'] .dot,
+.label[data-status='CONTACT_REVIEW'] .dot {
+  background: var(--amber);
+}
+
+@media (max-width: 640px) {
+  .labelInner {
+    font-size: 10px;
+    padding: 3px 6px;
+  }
+}

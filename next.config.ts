@@ -31,6 +31,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // The dev badge covers the bottom-left of the studio in QA screenshots; errors still surface.
+  devIndicators: false,
   // Lets parallel agents preview with separate build folders: NEXT_DIST_DIR=.next-hero next dev -p 3201
   distDir: process.env.NEXT_DIST_DIR || '.next',
   experimental: {

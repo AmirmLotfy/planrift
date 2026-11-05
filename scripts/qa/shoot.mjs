@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Screenshot any route at several viewport sizes (viewport shot + optional full page) for visual review.
-// Usage: node scripts/qa/shoot.mjs <baseUrl> <route> <outDir> [WxH,WxH,...] [--full] [--scroll=0,0.5,1]
+// Usage: node scripts/qa/shoot.mjs <baseUrl> <route> <outDir> [WxH,WxH,...] [--full] [--scroll=0,0.5,1 | --vh=0,1.5,3]
 import { mkdirSync } from 'node:fs';
 import { chromium } from '@playwright/test';
 
@@ -11,7 +11,11 @@ if (!base) {
 }
 const full = flags.includes('--full');
 const scrollArg = flags.find((f) => f.startsWith('--scroll='));
+const vhArg = flags.find((f) => f.startsWith('--vh='));
+const waitArg = flags.find((f) => f.startsWith('--wait='));
+const settle = waitArg ? Number(waitArg.slice(7)) : 1600;
 const scrolls = scrollArg ? scrollArg.slice(9).split(',').map(Number) : [0];
+const vhs = vhArg ? vhArg.slice(5).split(',').map(Number) : null;
 mkdirSync(out, { recursive: true });
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const problems = [];
@@ -24,7 +28,12 @@ for (const [w, h] of sizesArg.split(',').map((s) => s.split('x').map(Number))) {
   await page.goto(base + route, { waitUntil: 'networkidle', timeout: 60000 });
   await page.waitForTimeout(2500);
   const name = route.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'home';
-  for (const frac of scrolls) {
+  for (const vh of vhs ?? []) {
+    await page.evaluate((v) => window.scrollTo(0, innerHeight * v), vh);
+    await page.waitForTimeout(settle);
+    await page.screenshot({ path: `${out}/${name}-${w}-vh${Math.round(vh * 100)}.jpg`, type: 'jpeg', quality: 72 });
+  }
+  for (const frac of vhs ? [] : scrolls) {
     await page.evaluate((f) => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * f), frac);
     await page.waitForTimeout(1400);
     await page.screenshot({ path: `${out}/${name}-${w}-s${Math.round(frac * 100)}.jpg`, type: 'jpeg', quality: 72 });

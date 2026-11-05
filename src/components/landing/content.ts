@@ -82,7 +82,7 @@ export interface KiroHook {
 export interface KiroInventory {
   readonly specs: readonly { name: string; done: number; total: number }[];
   readonly hooks: readonly KiroHook[];
-  readonly agents: readonly string[];
+  readonly agents: readonly { name: string; summary: string }[];
   readonly steering: readonly { name: string; inclusion: string }[];
 }
 
@@ -123,7 +123,12 @@ export function kiroInventory(): KiroInventory | null {
     const agents = readdirSync(path.join(root, 'agents'))
       .filter((f) => f.endsWith('.md'))
       .sort()
-      .map((f) => f.replace(/\.md$/, ''));
+      .map((f) => {
+        const head = readFileSync(path.join(root, 'agents', f), 'utf8').slice(0, 1200);
+        const description = /^description:\s*(.+)$/m.exec(head)?.[1] ?? '';
+        // First sentence only: what the agent owns.
+        return { name: f.replace(/\.md$/, ''), summary: description.split(/(?<=\.)\s/)[0] ?? '' };
+      });
     const steering = readdirSync(path.join(root, 'steering'))
       .filter((f) => f.endsWith('.md'))
       .sort()
@@ -238,7 +243,7 @@ export function reviewSet() {
  */
 export const HOOK_STEPS: readonly { readonly file: string; readonly when: string; readonly then: string; readonly gate: boolean }[] = [
   { file: 'session-resume.json', when: 'Session starts', then: 'Resume summary from the repository', gate: false },
-  { file: 'task-start-gate.json', when: 'Spec task starts', then: 'Type-check gate', gate: true },
+  { file: 'task-start-gate.json', when: 'Spec task starts', then: 'Types must pass first', gate: true },
   { file: 'secret-guard.json', when: 'Agent writes a file', then: 'Credentials are blocked', gate: true },
   { file: 'geometry-regression.json', when: 'Agent edits src/domain', then: 'Geometry tests run', gate: false },
   { file: 'public-action-guard.json', when: 'Shell: deploy or push', then: 'Asks you first', gate: true },

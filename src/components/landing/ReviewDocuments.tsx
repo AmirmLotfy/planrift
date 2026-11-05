@@ -15,7 +15,7 @@ import { shortFingerprint } from '@/domain/io/canonical';
 import type { Door, Room, Scene } from '@/domain/model/types';
 import { FLAGSHIP } from '@/domain/seed/asterHouse';
 import { cloudPath } from '@/render/cloud';
-import { buildPlanModel, cropForRooms, fitCropToAspect, type PlanBounds } from '@/render/planModel';
+import { buildPlanModel, cropForRooms, fitCropToAspect } from '@/render/planModel';
 import { planToSvg } from '@/render/transforms';
 import type { Vec } from '@/domain/geometry/frame';
 import { reviewSet, type ReviewSheet } from './content';

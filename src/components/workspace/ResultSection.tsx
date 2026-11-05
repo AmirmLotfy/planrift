@@ -46,7 +46,8 @@ export function ResultSection() {
         <div>
           <dt>Opens</dt>
           <dd className="mono" data-testid="metric-opening">
-            {analysis.maxOpeningDeg === null ? '—' : `${formatDeg(analysis.maxOpeningDeg)} / 90°`}
+            {analysis.maxOpeningDeg === null ? '—' : formatDeg(analysis.maxOpeningDeg)}
+            {analysis.maxOpeningDeg === null ? null : <span className={styles.metricOf}>of {door.swingDeg}°</span>}
           </dd>
         </div>
         <div data-sign={sep !== null && sep < 0 ? 'negative' : 'positive'}>
