@@ -49,7 +49,7 @@ const T = {
   plan: [0.44, 0.6],
   morph: [0.48, 0.62],
   shift: [0.64, 0.74],
-  fix: [0.76, 0.88],
+  fix: [0.68, 0.8],
 } as const;
 
 const CHAPTERS = [
@@ -59,13 +59,16 @@ const CHAPTERS = [
   { n: '04', label: 'Reissue' },
 ] as const;
 
-const FRAMES: Record<'wide' | 'narrow', readonly [FrameBox, FrameBox]> = {
+/** Where the model sits: [3D model, plan beside the copy, plan beside the sheets]. */
+const FRAMES: Record<'wide' | 'narrow', readonly [FrameBox, FrameBox, FrameBox]> = {
   wide: [
     { left: 0.36, right: 1, top: 0.1, bottom: 0.94 },
+    { left: 0.44, right: 0.98, top: 0.12, bottom: 0.8 },
     { left: 0.02, right: 0.56, top: 0.13, bottom: 0.76 },
   ],
   narrow: [
     // Phones: the canvas is only the top 48 % of the stage (CSS), below the floating header.
+    { left: 0, right: 1, top: 0.17, bottom: 0.97 },
     { left: 0, right: 1, top: 0.17, bottom: 0.97 },
     { left: 0, right: 1, top: 0.17, bottom: 0.97 },
   ],
@@ -332,13 +335,13 @@ export function HeroStage() {
       const tPlan = q(T.plan);
       // Phones: keep the model below the floating header whatever the canvas height is.
       const below = small ? Math.min(0.4, HEADER_CLEARANCE_PX / Math.max(1, canvasBox.current?.clientHeight ?? 400)) : 0;
-      const frames = FRAMES[small ? 'narrow' : 'wide'].map((f) => (small ? { ...f, top: below } : f)) as unknown as readonly [FrameBox, FrameBox];
+      const frames = FRAMES[small ? 'narrow' : 'wide'].map((f) => (small ? { ...f, top: below } : f)) as unknown as readonly [FrameBox, FrameBox, FrameBox];
       drive.set({
         from: tPlan > 0 ? 'door' : 'hero',
         to: tPlan > 0 ? 'plan' : 'door',
         t: tPlan > 0 ? tPlan : tDoor,
         morph: q(T.morph),
-        frame: mixFrame(frames[0], frames[1], q(T.shift)),
+        frame: mixFrame(mixFrame(frames[0], frames[1], tPlan), frames[2], q(T.shift)),
       });
       const ch = chapterAt(p);
       setChapter(ch);

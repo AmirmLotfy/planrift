@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Screenshot any route at several viewport sizes (viewport shot + optional full page) for visual review.
-// Usage: node scripts/qa/shoot.mjs <baseUrl> <route> <outDir> [WxH,WxH,...] [--full] [--scroll=0,0.5,1 | --vh=0,1.5,3]
+// Usage: node scripts/qa/shoot.mjs <baseUrl> <route> <outDir> [WxH,WxH,...] [--full] [--scroll=0,0.5,1 | --vh=0,1.5,3] [--wait=ms] [--reduced]
 import { mkdirSync } from 'node:fs';
 import { chromium } from '@playwright/test';
 
@@ -20,7 +20,7 @@ mkdirSync(out, { recursive: true });
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
 const problems = [];
 for (const [w, h] of sizesArg.split(',').map((s) => s.split('x').map(Number))) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: flags.includes('--reduced') ? 'reduce' : 'no-preference' });
   const page = await ctx.newPage();
   page.on('console', (m) => m.type() === 'error' && problems.push(`[${w}] console: ${m.text().slice(0, 200)}`));
   page.on('pageerror', (e) => problems.push(`[${w}] pageerror: ${e.message.slice(0, 200)}`));
