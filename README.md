@@ -7,6 +7,8 @@ issued. Built with [Kiro](https://kiro.dev) for Kiroween 2026 (Frankenstein cate
 PLANRIFT is a rehearsal tool for simplified room geometry. It complements CAD and BIM tools; it does
 not replace them.
 
+**Live demo:** https://planrift-omega.vercel.app (landing) and https://planrift-omega.vercel.app/demo (studio). No sign-in.
+
 ## What it does
 
 - **Computes, never fakes.** Door swings are checked against furniture in whole millimetres with exact
