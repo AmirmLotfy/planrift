@@ -34,16 +34,16 @@ tune, now in major. The mix stays airy in the voice range so the narration sits 
 
 If you can edit the composition plan, use these sections:
 
-| # | Section | Length | Feel |
-|---|---|---|---|
-| 1 | Haunted sketch | 0:00–0:14 (14 s) | music box or celesta melody in D minor, ticking clock, low warm drone, sparse, mysterious but playful |
-| 2 | Impact and reveal | 0:14–0:22 (8 s) | soft deep impact, reverse swell, a warm chord opens, gentle shimmer |
-| 3 | Precision groove | 0:22–0:56 (34 s) | soft kick on 1 and 3, brushed hats, 16th-note analog arpeggio, felt piano chords, curious and optimistic, steady |
-| 4 | Conflict | 0:56–1:20 (24 s) | filter closes, pulsing low synth, staccato strings, one dissonant stab near 1:00, tense but not loud |
-| 5 | Resolution | 1:20–1:47 (27 s) | lift into D major, filter opens, pads widen, lighter percussion, relief |
-| 6 | Decision | 1:47–2:02 (15 s) | steady confident pulse, clean plucks, a sense of order |
-| 7 | It's alive | 2:02–2:35 (33 s) | layers stitch in one by one (pizzicato, arpeggio, drums, low strings), rising to a bright spark at about 2:17, still below voice level |
-| 8 | Outro | 2:35–2:55 (20 s) | strip back to the opening music-box melody in D major over a warm pad, soft final hit at 2:37, natural ring-out |
+| #   | Section           | Length           | Feel                                                                                                                                   |
+| --- | ----------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Haunted sketch    | 0:00–0:14 (14 s) | music box or celesta melody in D minor, ticking clock, low warm drone, sparse, mysterious but playful                                  |
+| 2   | Impact and reveal | 0:14–0:22 (8 s)  | soft deep impact, reverse swell, a warm chord opens, gentle shimmer                                                                    |
+| 3   | Precision groove  | 0:22–0:56 (34 s) | soft kick on 1 and 3, brushed hats, 16th-note analog arpeggio, felt piano chords, curious and optimistic, steady                       |
+| 4   | Conflict          | 0:56–1:20 (24 s) | filter closes, pulsing low synth, staccato strings, one dissonant stab near 1:00, tense but not loud                                   |
+| 5   | Resolution        | 1:20–1:47 (27 s) | lift into D major, filter opens, pads widen, lighter percussion, relief                                                                |
+| 6   | Decision          | 1:47–2:02 (15 s) | steady confident pulse, clean plucks, a sense of order                                                                                 |
+| 7   | It's alive        | 2:02–2:35 (33 s) | layers stitch in one by one (pizzicato, arpeggio, drums, low strings), rising to a bright spark at about 2:17, still below voice level |
+| 8   | Outro             | 2:35–2:55 (20 s) | strip back to the opening music-box melody in D major over a warm pad, soft final hit at 2:37, natural ring-out                        |
 
 **Exclude:** vocals, choir, lyrics, spoken words, EDM drop, dubstep, trap hi-hats, aggressive distortion,
 horror screams, jump scares, busy lead melody.
@@ -82,27 +82,27 @@ and the ending rings out instead of cutting off.
 
 ElevenLabs Sound Effects or similar; same licensing rule. One file each, in `video/inbox/`.
 
-| File | Prompt |
-|---|---|
-| `sfx-pen.wav` | Fine technical pen drawing a long straight line on heavy paper, close and quiet, 2 seconds |
+| File                | Prompt                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `sfx-pen.wav`       | Fine technical pen drawing a long straight line on heavy paper, close and quiet, 2 seconds  |
 | `sfx-door-thud.wav` | Wooden door swinging open fast, then a dull thud against a wooden cabinet, dry, 1.5 seconds |
-| `sfx-stamp.wav` | Rubber stamp pressed firmly onto paper on a desk, one crisp hit, 0.8 seconds |
-| `sfx-hit.wav` | Soft deep cinematic impact with a short warm tail, no metal, 2 seconds |
-| `sfx-whoosh.wav` | Airy, subtle whoosh for a screen transition, 0.6 seconds |
-| `sfx-click.wav` | Minimal soft UI click, glassy, quiet, 0.2 seconds |
-| `sfx-marker.wav` | Highlighter marker swiping across paper, one stroke, 0.7 seconds |
-| `sfx-paper.wav` | Three paper sheets sliding and landing on a desk, gentle, 1.5 seconds |
-| `sfx-spark.wav` | Small electric spark crackle and a soft hum swelling up, playful, 1.5 seconds |
+| `sfx-stamp.wav`     | Rubber stamp pressed firmly onto paper on a desk, one crisp hit, 0.8 seconds                |
+| `sfx-hit.wav`       | Soft deep cinematic impact with a short warm tail, no metal, 2 seconds                      |
+| `sfx-whoosh.wav`    | Airy, subtle whoosh for a screen transition, 0.6 seconds                                    |
+| `sfx-click.wav`     | Minimal soft UI click, glassy, quiet, 0.2 seconds                                           |
+| `sfx-marker.wav`    | Highlighter marker swiping across paper, one stroke, 0.7 seconds                            |
+| `sfx-paper.wav`     | Three paper sheets sliding and landing on a desk, gentle, 1.5 seconds                       |
+| `sfx-spark.wav`     | Small electric spark crackle and a soft hum swelling up, playful, 1.5 seconds               |
 
 ## Optional: Kiro IDE clips
 
 Real footage of Kiro helps the "how Kiro was used" score. If you can, record with Shift-Cmd-5 (no audio),
 after closing anything private (other projects, email, tokens, the MCP settings file):
 
-| File | What to show | Length |
-|---|---|---|
-| `kiro-specs.mov` | PLANRIFT open in Kiro; open `.kiro/specs/core-geometry-engine/tasks.md` and scroll slowly | 10–15 s |
-| `kiro-hooks.mov` | the Agent Hooks panel listing the six hooks | 8–10 s |
-| `kiro-steering.mov` | the `.kiro/steering` files in the explorer, click one open | 8 s |
+| File                | What to show                                                                              | Length  |
+| ------------------- | ----------------------------------------------------------------------------------------- | ------- |
+| `kiro-specs.mov`    | PLANRIFT open in Kiro; open `.kiro/specs/core-geometry-engine/tasks.md` and scroll slowly | 10–15 s |
+| `kiro-hooks.mov`    | the Agent Hooks panel listing the six hooks                                               | 8–10 s  |
+| `kiro-steering.mov` | the `.kiro/steering` files in the explorer, click one open                                | 8 s     |
 
 Without these clips I'll animate the real `.kiro` files instead.

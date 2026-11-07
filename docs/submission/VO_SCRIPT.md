@@ -31,58 +31,76 @@ Pronunciation: **PLANRIFT** = PLAN-rift · **Kiro** = KEER-oh · **3D** = three-
 
 ## The script
 
-**VO-01** · starts 0:02 · about 2.5 s · *hushed, like the first line of a ghost story*
+**VO-01** · starts 0:02 · about 2.5 s · _hushed, like the first line of a ghost story_
+
 > Every architect knows this horror story.
 
-**VO-02** · 0:05 · about 11 s · *build slowly; long pause before the last clause, then land it flat*
+**VO-02** · 0:05 · about 11 s · _build slowly; long pause before the last clause, then land it flat_
+
 > A door moves just over a metre on a revision. / The drawings go out. // And the first time someone opens it… / it slams into the furniture.
 
-**VO-03** · 0:17 · about 3.5 s · *lift; confident, a small smile*
+**VO-03** · 0:17 · about 3.5 s · _lift; confident, a small smile_
+
 > PLANRIFT catches that before the revision is issued.
 
-**VO-04** · 0:22 · about 7 s · *warm, inviting*
+**VO-04** · 0:22 · about 7 s · _warm, inviting_
+
 > This is a live model of a hotel room. / Every number you see is computed, not typed in.
 
-**VO-05** · 0:30 · about 10 s · *hands-on, a little playful on "grab"*
+**VO-05** · 0:30 · about 10 s · _hands-on, a little playful on "grab"_
+
 > Grab the door and slide it along the wall. / The engine re-checks the swing against every piece of furniture, to the millimetre, as you move.
 
-**VO-06** · 0:41 · about 13 s · *clear, steady; the calm "before" picture*
+**VO-06** · 0:41 · about 13 s · _clear, steady; the calm "before" picture_
+
 > In the studio, we start from the approved plan. / The door clears the console by more than a metre, / and the strip along the wall shows the result for every position it could take.
 
-**VO-07** · 0:56 · about 3 s · *matter-of-fact*
+**VO-07** · 0:56 · about 3 s · _matter-of-fact_
+
 > Revision A moves it to three thousand millimetres.
 
-**VO-08** · 1:00 · about 10 s · *tense; slow down on the two numbers*
+**VO-08** · 1:00 · about 10 s · _tense; slow down on the two numbers_
+
 > Now the leaf hits the console after just fifteen point seven degrees, / and would push one hundred and eighty-eight point seven millimetres into it.
 
-**VO-09** · 1:11 · about 8 s · *assured; this is the trust line*
+**VO-09** · 1:11 · about 8 s · _assured; this is the trust line_
+
 > Plan and 3D can't disagree: / both come from the same scene, / and every status is decided with exact integer maths.
 
-**VO-10** · 1:21 · about 7 s · *relief; three short beats*
+**VO-10** · 1:21 · about 7 s · _relief; three short beats_
+
 > Revision B tries twenty-four hundred. / Full swing. / Three hundred and ninety-one point five millimetres clear.
 
-**VO-11** · 1:30 · about 8 s · *a gentle "but"; slightly lower*
+**VO-11** · 1:30 · about 8 s · _a gentle "but"; slightly lower_
+
 > But clear isn't finished. / Three documents show this door: / the floor plan, the room elevation and the door schedule.
 
-**VO-12** · 1:39 · about 9 s · *reassuring*
+**VO-12** · 1:39 · about 9 s · _reassuring_
+
 > PLANRIFT flags each one for a person to reissue. / It never edits them, / and it leaves the room next door alone.
 
-**VO-13** · 1:49 · about 7 s · *brisk, practical*
+**VO-13** · 1:49 · about 7 s · _brisk, practical_
+
 > Compare both revisions with the approved plan. / Submit for review, acknowledge the flagged sheets, / and accept.
 
-**VO-14** · 1:57 · about 5.5 s · *satisfied, a full stop*
+**VO-14** · 1:57 · about 5.5 s · _satisfied, a full stop_
+
 > The decision becomes a receipt, with a fingerprint of the scene before and after.
 
-**VO-15** · 2:04 · about 16 s · *a wink on "Frankenstein"; the list speeds up like parts snapping together; slow down on the last sentence*
+**VO-15** · 2:04 · about 16 s · _a wink on "Frankenstein"; the list speeds up like parts snapping together; slow down on the last sentence_
+
 > Under the hood, it's a Frankenstein: / a CAD-style editor, a geometry engine, a live 3D room, revision control, a document ledger and an audit trail, / stitched into one loop. // One edit flows through all of them.
 
-**VO-16** · 2:21 · about 5 s · *proud but plain*
+**VO-16** · 2:21 · about 5 s · _proud but plain_
+
 > Kiro built it with five specs, nine steering files and seven custom agents.
 
-**VO-17** · 2:27 · about 8 s · *firm, a little dry humour on "honest"*
+**VO-17** · 2:27 · about 8 s · _firm, a little dry humour on "honest"_
+
 > Six hooks kept it honest: / tests gate every task, secrets can't be written, / and nothing goes public without asking.
 
-**VO-18** · 2:37 · about 4.5 s · *slow; the name, a breath, then the promise*
+**VO-18** · 2:37 · about 4.5 s · _slow; the name, a breath, then the promise_
+
 > PLANRIFT. // Know what a revision breaks, / before it's issued.
 
 ## TTS version (numbers and codes spelled out)
@@ -112,12 +130,12 @@ VO-18  Plan-rift... Know what a revision breaks, before it's issued.
 
 ## Where each claim comes from
 
-| Line | Claim | Source |
-|---|---|---|
-| 06 | clears the console by more than a metre | 1,083.7 mm at 1,700 mm (GEOMETRY_CONTRACT §7) |
-| 07–08 | 3,000 mm: strike at 15.7°, 188.7 mm intrusion | §7, shown in the studio |
-| 09 | exact integer maths | `compareSeparation` integer predicates (§4) |
-| 10 | 2,400 mm: 391.5 mm clear | §7 |
-| 11–12 | A-101, A-401, D-01 flagged; R-513 / A-402 not | impact ledger, e2e checked |
-| 14 | fingerprint before and after | receipt shows source and result scene hashes |
-| 16–17 | 5 specs, 9 steering, 7 agents, 6 hooks | `.kiro/` |
+| Line  | Claim                                         | Source                                        |
+| ----- | --------------------------------------------- | --------------------------------------------- |
+| 06    | clears the console by more than a metre       | 1,083.7 mm at 1,700 mm (GEOMETRY_CONTRACT §7) |
+| 07–08 | 3,000 mm: strike at 15.7°, 188.7 mm intrusion | §7, shown in the studio                       |
+| 09    | exact integer maths                           | `compareSeparation` integer predicates (§4)   |
+| 10    | 2,400 mm: 391.5 mm clear                      | §7                                            |
+| 11–12 | A-101, A-401, D-01 flagged; R-513 / A-402 not | impact ledger, e2e checked                    |
+| 14    | fingerprint before and after                  | receipt shows source and result scene hashes  |
+| 16–17 | 5 specs, 9 steering, 7 agents, 6 hooks        | `.kiro/`                                      |
