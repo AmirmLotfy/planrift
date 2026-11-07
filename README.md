@@ -9,6 +9,10 @@ not replace them.
 
 **Live demo:** https://planrift-omega.vercel.app (landing) and https://planrift-omega.vercel.app/demo (studio). No sign-in.
 
+![PLANRIFT landing page: the white study model with door D-101](docs/submission/screenshots/01-landing-hero.jpg)
+
+![PLANRIFT studio: Revision A strikes console F-07 at 15.7 degrees](docs/submission/screenshots/09-studio-conflict-3000.jpg)
+
 ## What it does
 
 - **Computes, never fakes.** Door swings are checked against furniture in whole millimetres with exact
@@ -25,6 +29,8 @@ not replace them.
 No code or accessibility compliance, no approval to build, no DWG/DXF/IFC/Revit support, no automatic
 drawing edits. Rotated furniture, sliding doors and non-90° swings are reported as Unsupported.
 See `docs/geometry/GEOMETRY_CONTRACT.md` for the exact model.
+
+Submission material (screenshots, video script, Devpost text): `docs/submission/`.
 
 ## Run it
 

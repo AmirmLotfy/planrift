@@ -1,0 +1,50 @@
+1
+00:00:00,000 --> 00:00:14,000
+An architect moves a door in a hotel room.
+On the plan it looks fine.
+Does the swing hit anything? And which drawings must be reissued?
+
+2
+00:00:14,000 --> 00:00:30,000
+This is PLANRIFT. The room is a white study model,
+driven by a real geometry engine. Drag the door along the wall.
+
+3
+00:00:30,000 --> 00:00:55,000
+The approved plan: door D-101 at 1,700 millimetres.
+Its swing clears console F-07 by 1,083.7 millimetres.
+The strip under the wall is the result at every millimetre the hinge could sit.
+
+4
+00:00:55,000 --> 00:01:25,000
+Revision A: move the door to 3,000.
+The leaf strikes the console after 15.7 degrees
+and would push 188.7 millimetres into it.
+Plan and 3D agree because they are drawn from one scene.
+
+5
+00:01:25,000 --> 00:01:45,000
+Branch a second scenario from the approved plan and try 2,400.
+The swing clears the console by 391.5 millimetres.
+
+6
+00:01:45,000 --> 00:02:05,000
+But clear is not finished. Three documents show this door:
+A-101, A-401 and D-01. PLANRIFT flags them for review.
+It never edits them. Room 513 is untouched.
+
+7
+00:02:05,000 --> 00:02:25,000
+Compare the approved plan and both revisions side by side.
+Submit for review, acknowledge the flagged sheets, accept.
+The decision becomes a receipt.
+
+8
+00:02:25,000 --> 00:02:40,000
+The geometry uses exact integer arithmetic.
+Kiro built it from specs, steering, custom agents,
+and hooks that run the tests and ask before anything goes public.
+
+9
+00:02:40,000 --> 00:02:48,000
+PLANRIFT. Know what a revision breaks before it is issued.
