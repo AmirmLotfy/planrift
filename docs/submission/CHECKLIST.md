@@ -11,13 +11,13 @@ Deadline: **Friday 4 December 2026, 2:00 PM Pacific.** Updated 2026-11-07.
 - [x] Secret scan of tracked files and full history: clean
 - [x] `tsc`, ESLint, 83 unit tests and 13 Playwright checks (desktop + phone, axe) pass: `docs/evidence/2026-11-04-verification.md`
 - [x] 14 screenshots captured from the deployed app: `docs/submission/screenshots/`
-- [x] Video script, shot list, captions and YouTube copy: `VIDEO.md`, `captions.srt`
+- [x] Voiceover script: `VO_SCRIPT.md`; music and SFX prompts: `MUSIC_PROMPT.md`; storyboard: `VIDEO.md`
 - [x] Devpost text drafted: `DEVPOST.md`
 
 ## Needs you
 
-- [ ] Record the voiceover and screen capture (see `VIDEO.md`; under 3:00)
-- [ ] Upload to YouTube as Public, add `captions.srt`, send me the URL
+- [ ] Send VO-01…VO-18, room tone and music (plus optional SFX and Kiro IDE clips) to `video/inbox/`
+- [ ] Approve the finished video, upload it to YouTube as Public with the generated captions, send me the URL
 - [ ] Say "make the repo public" (I will re-run the secret scan first)
 - [ ] Review `DEVPOST.md`, then say "submit" (or paste it into Devpost yourself)
 
