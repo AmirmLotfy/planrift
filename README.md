@@ -35,11 +35,11 @@ npm ci
 npm run dev        # http://localhost:3000  (landing)  and  /demo  (studio)
 ```
 
-| Command | Purpose |
-|---|---|
-| `npm run verify` | typecheck, lint, unit tests, production build |
-| `npm run e2e` | Playwright judge flow and axe accessibility checks (desktop + phone) |
-| `npm run test:domain` | geometry engine tests, including independent oracles |
+| Command               | Purpose                                                              |
+| --------------------- | -------------------------------------------------------------------- |
+| `npm run verify`      | typecheck, lint, unit tests, production build                        |
+| `npm run e2e`         | Playwright judge flow and axe accessibility checks (desktop + phone) |
+| `npm run test:domain` | geometry engine tests, including independent oracles                 |
 
 First e2e run needs a browser: `npx playwright install --only-shell chromium`.
 
