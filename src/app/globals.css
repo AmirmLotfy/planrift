@@ -6,7 +6,7 @@
   --model-2: #ecebe5;
   --ink: #111315;
   --ink-2: #4a5057;
-  --ink-3: #858b91;
+  --ink-3: #6a7076; /* 4.6:1 on --paper (AA); was #858b91 */
   --rule: #e3e4df;
   --rule-2: #cfd1cb;
 

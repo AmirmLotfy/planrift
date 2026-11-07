@@ -35,6 +35,8 @@ const eslintConfig = defineConfig([
   },
   globalIgnores([
     '.next/**',
+    '.next-*/**',
+    '.kiro-cache/**',
     'out/**',
     'build/**',
     'next-env.d.ts',

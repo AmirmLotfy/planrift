@@ -37,7 +37,7 @@ Signature moments (all computed live by the engine, nothing pre-rendered):
 | `--model-2` | #ECEBE5 | 3D furniture material (one step darker, so objects separate) |
 | `--ink` | #111315 | text, linework |
 | `--ink-2` | #4A5057 | secondary text |
-| `--ink-3` | #858B91 | tertiary text, dimension text |
+| `--ink-3` | #6A7076 | tertiary text, dimension text |
 | `--rule` | #E3E4DF | hairlines |
 | `--rule-2` | #CFD1CB | stronger rules, input borders |
 | `--grip` | #2F5BFF | interaction only: handles, selection, focus, primary action |

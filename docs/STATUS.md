@@ -3,7 +3,7 @@
 Resume point for any new Kiro session. Update at every phase boundary. Evidence lives in
 `docs/evidence/`. Statuses: Planned · In progress · Implemented · Tested · Verified · Released.
 
-Last updated: 2026-11-04
+Last updated: 2026-11-05
 
 ## Decisions (user-confirmed 2026-11-04)
 
@@ -23,10 +23,18 @@ zod 4.6.7 · zustand 5.0.16 · typescript 6.0.3 (typescript-eslint requires < 6.
 jsdom 26.1.0 (jsdom 30 needs Node >= 22.22).
 
 ## Progress
-
 | Phase | Status | Evidence |
 |---|---|---|
-| 00 Research | Implemented | Kiro docs + Kiroween page verified 2026-11-04; Devpost rules page returns 403 to the fetcher |
-| 02 Foundation | In progress | package.json, tsconfig, next/vitest/eslint configs |
-| 03 Geometry engine | Tested | `tests/domain/separation.test.ts`, `tests/domain/analysis.test.ts` (46 passing) |
-| 04 Revision model | In progress | |
+| Geometry engine, revision model, IO | Tested | 83 unit tests, docs/evidence/2026-11-04-verification.md |
+| Render models (plan + 3D) | Tested | tests/render agreement tests |
+| Landing: white-model hero, scroll story, sections | Verified | e2e + screenshots, desktop and phone |
+| Studio (/demo) incl. 3D Model view | Verified | e2e + axe, desktop and phone |
+| Kiro assets (specs, steering, agents, hooks) | Implemented | .kiro/ |
+| README, MIT licence | Implemented | README.md, LICENSE |
+| GitHub repo, Vercel deploy | Waiting on user | needs vercel login, gh auth login and approval |
+| Demo video, Devpost copy | Not started | user records the voiceover |
+
+## Next
+1. User: `vercel login`, `gh auth login`, then approve repo creation and deploy.
+2. Capture release screenshots and write the demo script and shot list.
+3. Draft Devpost text; submit only after explicit approval (deadline Fri 4 Dec 2026, 2:00 PM PT).
