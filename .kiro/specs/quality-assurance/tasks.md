@@ -1,12 +1,15 @@
 # Implementation Plan — Quality assurance
 
-- [ ] 1. PLR-02-04 Playwright and axe setup; install Chromium
+- [x] 1. PLR-02-04 Playwright and axe setup; install Chromium
+  - Status: Done (`playwright.config.ts`, desktop and phone projects, `@axe-core/playwright`)
   - _Requirements: 1.3, 2.1_
 
-- [ ] 2. PLR-06-01 Render agreement tests (2D vs 3D vs canonical)
+- [x] 2. PLR-06-01 Render agreement tests (2D vs 3D vs canonical)
+  - Status: Tested (`tests/render/agreement.test.ts`)
   - _Requirements: 1.2_
 
-- [ ] 3. PLR-12-01 Judge flow e2e test (master plan §K)
+- [x] 3. PLR-12-01 Judge flow e2e test (master plan §K)
+  - Status: Tested (`e2e/judge-flow.spec.ts`, 13 passed and 1 skipped on 2026-11-04)
   - _Requirements: 1.3_
 
 - [ ] 4. PLR-13-02 E2E: drag, keyboard, persistence, export/import, import errors

@@ -34,6 +34,7 @@
   - Status: Tested (bands equal the contract; agreement with analyzeScene every 7 mm)
   - _Requirements: 5.1_
 
-- [ ] 8. PLR-13-01 Record geometry test evidence
+- [x] 8. PLR-13-01 Record geometry test evidence
   - Run `npm run test:domain`, store summary in `docs/evidence/tests-domain.md` with date
+  - Status: Recorded 2026-11-08 (3 files, 75 tests passed)
   - _Requirements: 2.3, 4.1_
