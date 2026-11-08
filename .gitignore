@@ -33,11 +33,15 @@ npm-debug.log*
 # vercel
 .vercel
 
-# video: raw voice, music and render output stay local
+# video: raw voice, music, recordings, intermediate audio and render output stay local
 /video/inbox/
 /video/out/
 /video/capture/
 /video/node_modules/
+/video/public/media/
+/video/build/*
+!/video/build/vo-lines.json
+/video/.whisper/
 
 # local scratch output from hooks
 /.kiro-cache/

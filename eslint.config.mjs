@@ -14,10 +14,19 @@ const eslintConfig = defineConfig([
         'error',
         {
           patterns: [
-            { group: ['react', 'react-dom', 'react/*', 'react-dom/*'], message: 'src/domain must not import React.' },
-            { group: ['three', 'three/*', '@react-three/*'], message: 'src/domain must not import Three.js.' },
+            {
+              group: ['react', 'react-dom', 'react/*', 'react-dom/*'],
+              message: 'src/domain must not import React.',
+            },
+            {
+              group: ['three', 'three/*', '@react-three/*'],
+              message: 'src/domain must not import Three.js.',
+            },
             { group: ['next', 'next/*'], message: 'src/domain must not import Next.js.' },
-            { group: ['@/components/*', '@/state/*', '@/app/*'], message: 'src/domain must not depend on UI layers.' },
+            {
+              group: ['@/components/*', '@/state/*', '@/app/*'],
+              message: 'src/domain must not depend on UI layers.',
+            },
           ],
         },
       ],
@@ -43,6 +52,8 @@ const eslintConfig = defineConfig([
     'playwright-report/**',
     'test-results/**',
     'docs/**',
+    // The demo-video project (Remotion) is a separate package with its own tsconfig and dependencies.
+    'video/**',
   ]),
 ]);
 
