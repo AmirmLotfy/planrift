@@ -165,11 +165,11 @@ Agent hooks (.kiro/hooks, 6):
 - PostTaskExec: runs type check, lint and tests after each task.
 - PreToolUse on file writes: blocks content that looks like a credential.
 - PostFileSave on src/domain: re-runs the geometry tests.
-- PreToolUse on shell: asks for approval before any deploy, push or commit.
+- PreToolUse on shell: asks for approval before any deploy, push or publish, and blocks a commit while the type check fails.
 
 Property-based testing: the engine's correctness properties are fast-check properties checked against independent oracles, never against the production formulas, plus metamorphic checks and cases at the tolerance edges.
 
-Kiro also ran the research, the visual QA loops (screenshot, critique, fix) and the scripts that recorded the demo video, with a person approving every public action. The landing page reads .kiro/ at build time and shows the specs, agents, steering files and hooks in the order they fire.
+Kiro also ran the research, the visual QA loops (screenshot, critique, fix) and the scripts that recorded the demo video, while account actions (creating the repository, deploying, publishing) waited for a person's approval. The landing page reads .kiro/ at build time and shows the specs, agents, steering files and hooks in the order they fire.
 ```
 
 ## Pre-existing code disclosure

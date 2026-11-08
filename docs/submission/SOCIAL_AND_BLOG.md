@@ -29,7 +29,7 @@ Six hooks shaped how I worked with the agent:
 • a spec task could not start while the type check failed, and could not finish until type check, lint and tests passed
 • any file write that looked like a credential was blocked
 • every edit to the geometry engine re-ran its tests
-• nothing was deployed, pushed or committed without asking me
+• nothing was deployed or pushed without asking me, and a commit was blocked while the type check failed
 
 That changed my approach. I stopped reading every diff for slips and spent my review time on decisions: what the product may claim, and what it must call "Unsupported".
 
@@ -90,7 +90,7 @@ I started from an empty folder and wrote the specs before any UI existed. There 
 
 **Custom agents** gave each kind of work its own scope: a geometry engineer for the solver and its property tests, a frontend engineer, a 3D engineer, a design director for visual QA, a QA engineer for Playwright and axe, a release producer, and a read-only architecture reviewer that checks no displayed status bypasses the engine.
 
-**Hooks** are my favourite part, and they changed how I worked. A spec task cannot start while the type check fails. When a task finishes, type check, lint and tests run. Any file write that looks like a credential is blocked. Saving a file in the engine re-runs the geometry tests. Anything that deploys, pushes or commits asks me first. Once those gates existed I stopped reading every diff for slips and spent my attention on decisions instead.
+**Hooks** are my favourite part, and they changed how I worked. A spec task cannot start while the type check fails. When a task finishes, type check, lint and tests run. Any file write that looks like a credential is blocked. Saving a file in the engine re-runs the geometry tests. Anything that deploys or pushes asks me first, and a commit is refused while the type check fails. Once those gates existed I stopped reading every diff for slips and spent my attention on decisions instead.
 
 The landing page reads `.kiro/` when it is built and shows the specs, agents, steering files and hooks in the order they fire, so the process is visible in the product.
 
