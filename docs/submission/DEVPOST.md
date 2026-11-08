@@ -145,7 +145,7 @@ No account or sign-in. Desktop Chrome or Edge at 1280 px or wider works best; ph
 
 4. Run the checks locally (Node 22, npm):
    npm ci && npm run verify        # type check, lint, unit and property tests, production build
-   npx playwright install chromium && npm run e2e   # Playwright judge flow and axe checks
+   npx playwright install --only-shell chromium && npm run e2e   # Playwright judge flow and axe checks
 ```
 
 ## Explain how your project meets the main technology requirement

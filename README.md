@@ -58,6 +58,7 @@ src/components/  landing, studio, plan (SVG) and scene (WebGL white model)
 tests/ e2e/      Vitest (domain, render) and Playwright
 .kiro/           specs, steering, custom agents and hooks used to build it
 docs/            master plan, geometry contract, status, evidence
+video/           demo video: frame-by-frame capture of the live app and the Remotion edit
 ```
 
 ## Built with Kiro

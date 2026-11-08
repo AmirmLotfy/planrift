@@ -5,7 +5,7 @@
       "name": "Approval gate for deploys, pushes and commits",
       "trigger": "PreToolUse",
       "description": "Asks the user before vercel, gh repo create/edit, gh release, git push or npm publish; blocks git commit when the type check fails.",
-      "matcher": "shell",
+      "matcher": "^(shell|execute_bash|executeBash|control_bash_process)$",
       "action": {
         "type": "command",
         "command": "node scripts/kiro/public-action-guard.mjs",
